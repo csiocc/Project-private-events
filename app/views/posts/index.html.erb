@@ -1,16 +1,16 @@
-<p style="color: green"><%= notice %></p>
+<div class="max-w-5xl h-screen mx-auto mt-10 px-4">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-semibold text-gray-800">Community Posts</h1>
+    <%= link_to "New Post", new_post_path, class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-sm transition" %>
+  </div>
 
-<% content_for :title, "Posts" %>
-
-<h1>Posts</h1>
-
-<div id="posts">
-  <% @posts.each do |post| %>
-    <%= render post %>
-    <p>
-      <%= link_to "Show this post", post %>
-    </p>
+  <% if @posts.any? %>
+    <div class="space-y-4">
+      <%= render @posts %>
+    </div>
+  <% else %>
+    <div class="text-center text-gray-500 py-12 bg-white rounded-xl shadow">
+      <p>No posts found. Be the first to share something!</p>
+    </div>
   <% end %>
 </div>
-
-<%= link_to "New post", new_post_path %>

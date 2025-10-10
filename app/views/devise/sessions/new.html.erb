@@ -9,7 +9,7 @@
       <p class="text-gray-600 text-sm">Join and start discovering private events</p>
     </div>
 
-    <!-- Social Sign-in (optional) -->
+    <!-- Social login -->
     <div class="space-y-3">
       <%= link_to "#", class: "w-full inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 px-4 py-2 hover:bg-gray-100 transition" do %>
         <i class="bx bxl-google text-xl"></i> Continue with Google(comming soon..)
@@ -39,8 +39,7 @@
     <% end %>
 
     <!-- Login Form -->
-    <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "space-y-4", data: { turbo: false } }) do |f| %>
-      <%# Name (falls du ein name-Feld hast) %>
+    <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { data: { turbo: false }, class: "space-y-4" }) do |f| %>
       <div>
         <label class="block text-sm font-medium mb-1">Email</label>
         <%= f.email_field :email,
@@ -74,7 +73,7 @@
   </div>
 </div>
 
-<!-- kleines Inline-JS für Show/Hide Passwort -->
+<!-- Inline-JS für Show/Hide Passwort -->
 <script>
   document.addEventListener("turbo:load", () => {
     const toggle = (inputId, iconId) => {
