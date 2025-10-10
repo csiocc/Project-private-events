@@ -1,26 +1,94 @@
-<h2>Log in</h2>
+<!-- Container -->
+<div class="min-h-[95vh] grid place-items-center px-4">
+  <div class="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
 
-<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
-  </div>
-
-  <div class="field">
-    <%= f.label :password %><br />
-    <%= f.password_field :password, autocomplete: "current-password" %>
-  </div>
-
-  <% if devise_mapping.rememberable? %>
-    <div class="field">
-      <%= f.check_box :remember_me %>
-      <%= f.label :remember_me %>
+    <!-- Logo / Titel -->
+    <div class="mb-6 text-center">
+      <%= render("shared/logo") rescue "" %>
+      <h1 class="mt-4 text-2xl font-bold tracking-tight">Login</h1>
+      <p class="text-gray-600 text-sm">Join and start discovering private events</p>
     </div>
-  <% end %>
 
-  <div class="actions">
-    <%= f.submit "Log in" %>
+    <!-- Social Sign-in (optional) -->
+    <div class="space-y-3">
+      <%= link_to "#", class: "w-full inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 px-4 py-2 hover:bg-gray-100 transition" do %>
+        <i class="bx bxl-google text-xl"></i> Continue with Google(comming soon..)
+      <% end %>
+      <%= link_to "#", class: "w-full inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 px-4 py-2 hover:bg-gray-100 transition" do %>
+        <i class="bx bxl-apple text-xl"></i> Continue with Apple(comming soon..)
+      <% end %>
+    </div>
+
+    <!-- Divider -->
+    <div class="relative my-6">
+      <div class="absolute inset-0 flex items-center">
+        <div class="w-full border-t border-gray-200"></div>
+      </div>
+      <div class="relative flex justify-center text-xs">
+        <span class="bg-white px-3 text-gray-500">or</span>
+      </div>
+    </div>
+
+    <!-- Fehleranzeige -->
+    <% if flash[:alert].present? || flash[:notice].present? %>
+      <div class="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+        <p class="font-semibold mb-1">
+          <%= (flash[:alert] || flash[:notice]) %>
+        </p>
+      </div>
+    <% end %>
+
+    <!-- Login Form -->
+    <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "space-y-4", data: { turbo: false } }) do |f| %>
+      <%# Name (falls du ein name-Feld hast) %>
+      <div>
+        <label class="block text-sm font-medium mb-1">Email</label>
+        <%= f.email_field :email,
+              autofocus: true,
+              autocomplete: "email",
+              class: "w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none" %>
+      </div>
+
+      <div class="relative">
+        <label class="block text-sm font-medium mb-1">Password</label>
+        <%= f.password_field :password, id: "login_password", autocomplete: "current-password", class: "w-full rounded-lg border border-gray-300 pr-10 focus:ring-2 focus:ring-blue-400 focus:outline-none" %>
+        <button type="button" id="toggle_pwd" class="absolute right-2 top-9 -translate-y-1/2 text-gray-500 hover:text-gray-700" aria-label="Show password">
+          <i class="bx bx-show text-xl" id="toggle_icon"></i>
+        </button>
+      </div>
+
+      <% if devise_mapping.rememberable? %>
+        <div class="flex items-center justify-between">
+          <label class="inline-flex items-center gap-2 text-sm">
+            <%= f.check_box :remember_me %>
+            <span>Remember me</span>
+          </label>
+          <%= link_to "Forgot your password?", new_password_path(resource_name), class: "text-sm text-blue-600 hover:underline" %>
+        </div>
+      <% end %>
+
+      <%= f.submit "Login", class: "w-full inline-flex items-center justify-center rounded-lg bg-blue-600 px-4 py-2.5 font-semibold text-white hover:bg-blue-700 transition" %>
+    <% end %>
+
+
   </div>
-<% end %>
+</div>
 
-<%= render "devise/shared/links" %>
+<!-- kleines Inline-JS für Show/Hide Passwort -->
+<script>
+  document.addEventListener("turbo:load", () => {
+    const toggle = (inputId, iconId) => {
+      const input = document.getElementById(inputId);
+      const icon  = document.getElementById(iconId);
+      if (!input || !icon) return;
+      const type = input.getAttribute("type") === "password" ? "text" : "password";
+      input.setAttribute("type", type);
+      icon.classList.toggle("bx-show");
+      icon.classList.toggle("bx-hide");
+    };
+    const btn1 = document.getElementById("toggle_pwd");
+    const btn2 = document.getElementById("toggle_pwd_conf");
+    btn1 && btn1.addEventListener("click", () => toggle("signup_password", "toggle_icon"));
+    btn2 && btn2.addEventListener("click", () => toggle("signup_password_confirmation", "toggle_icon_conf"));
+  });
+</script>

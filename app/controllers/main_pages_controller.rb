@@ -8,6 +8,9 @@ class MainPagesController < ApplicationController
     @news_feeds = NewsFeed.all
   end
 
+  def privacy_policy; end
+  def terms_of_service; end
+
   # GET /main_pages/1 or /main_pages/1.json
   def show
   end
