@@ -1,0 +1,12 @@
+<% content_for :title, "Editing main page" %>
+
+<h1>Editing main page</h1>
+
+<%= render "form", main_page: @main_page %>
+
+<br>
+
+<div>
+  <%= link_to "Show this main page", @main_page %> |
+  <%= link_to "Back to main pages", main_pages_path %>
+</div>

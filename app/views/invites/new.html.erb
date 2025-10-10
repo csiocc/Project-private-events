@@ -1,0 +1,11 @@
+<% content_for :title, "New invite" %>
+
+<h1>New invite</h1>
+
+<%= render "form", invite: @invite %>
+
+<br>
+
+<div>
+  <%= link_to "Back to invites", invites_path %>
+</div>

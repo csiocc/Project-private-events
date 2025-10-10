@@ -1,0 +1,29 @@
+<!-- button helper -->
+<% button_round = "group relative inline-flex items-center justify-center border border-solid border-black  w-24 h-24 bg-white rounded-full hover:bg-blue-100"%>
+
+<div class="flex items-center justify-center gap-4 w-screen h-auto bg-white p-4 shadow-md border-solid border">
+
+  <p>Events</p>
+
+   <%= link_to events_path, class: button_round do %> <i class='bx  bxs-cat text-7xl'  style='color:#000000 '></i>     
+      <span class="absolute -bottom-8 scale-0 group-hover:scale-100 transition-transform bg-gray-800 text-white text-xs rounded px-2 py-1">
+        Catsitting
+      </span>
+  <% end %>
+  <%= link_to events_path, class: button_round do %><i class='bx  bxs-dog text-7xl'  style='color:#000000 '></i>
+      <span class="absolute -bottom-8 scale-0 group-hover:scale-100 transition-transform bg-gray-800 text-white text-xs rounded px-2 py-1">
+        Dogsitting
+      </span>
+  <% end %>
+  <%= link_to events_path, class: button_round do %><i class='bx  bxs-party text-7xl'  style='color:#000000'></i> 
+      <span class="absolute -bottom-8 scale-0 group-hover:scale-100 transition-transform bg-gray-800 text-white text-xs rounded px-2 py-1">
+        Party
+      </span>
+  <% end %>
+  <%= link_to events_path, class: button_round do %><%= image_tag "people-heart.png", alt: "People Heart", class: "w-20 h-20 object-contain" %>  
+      <span class="absolute -bottom-8 scale-0 group-hover:scale-100 transition-transform bg-gray-800 text-white text-xs rounded px-2 py-1">
+        Dating
+      </span>
+  <% end %>
+
+</div>

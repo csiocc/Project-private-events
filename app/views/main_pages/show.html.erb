@@ -1,0 +1,10 @@
+
+
+<%= render @main_page %>
+
+<div>
+  <%= link_to "Edit this main page", edit_main_page_path(@main_page) %> |
+  <%= link_to "Back to main pages", main_pages_path %>
+
+  <%= button_to "Destroy this main page", @main_page, method: :delete %>
+</div>
