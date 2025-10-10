@@ -12,7 +12,7 @@ class User < ApplicationRecord
   has_many :event_guests, inverse_of: :user, dependent: :destroy
 
   # is guest of a event
-  has_many :upcomming_events, through: :event_guests, soure: :event
+  has_many :upcomming_events, through: :event_guests, source: :event
 
   # posts and comments relationship
   has_many :posts, inverse_of: :user, dependent: :destroy
