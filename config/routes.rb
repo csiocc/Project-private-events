@@ -1,10 +1,12 @@
 Rails.application.routes.draw do
-  resources :news_feeds
   devise_for :users
+  resources :news_feeds
   resources :main_pages
   resources :invites
   resources :comments
-  resources :posts
+  resources :posts do
+    resources :comments, only: [:create, :edit, :update, :destroy]
+  end
   resources :users
   resources :events
 

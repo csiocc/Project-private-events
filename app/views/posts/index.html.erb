@@ -1,16 +1,17 @@
-<div class="max-w-5xl h-screen mx-auto mt-10 px-4">
-  <div class="flex justify-between items-center mb-6">
-    <h1 class="text-3xl font-semibold text-gray-800">Community Posts</h1>
-    <%= link_to "New Post", new_post_path, class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-sm transition" %>
-  </div>
+<main class="relative flex flex-col justify-center items-center w-full bg-gray-100 min-h-screen py-10">
 
-  <% if @posts.any? %>
-    <div class="space-y-4">
+  <div class="w-full max-w-7xl px-6">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-10">
+      <h1 class="text-4xl font-semibold text-gray-800">Community Posts</h1>
+      <%= link_to "New Post", new_post_path,
+          class: "bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg shadow-sm transition" %>
+    </div>
+
+    <!-- Posts -->
+    <div class="space-y-10">
       <%= render @posts %>
     </div>
-  <% else %>
-    <div class="text-center text-gray-500 py-12 bg-white rounded-xl shadow">
-      <p>No posts found. Be the first to share something!</p>
-    </div>
-  <% end %>
-</div>
+  </div>
+
+</main>

@@ -9,6 +9,7 @@ class PostsController < ApplicationController
 
   # GET /posts/1 or /posts/1.json
   def show
+    @post = Post.includes(:user, comments: :user).find(params[:id])
   end
 
   # GET /posts/new

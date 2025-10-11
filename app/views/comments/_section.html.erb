@@ -1,0 +1,53 @@
+<!-- Comments Section -->
+<div data-controller="comment" class="bg-white rounded-2xl shadow-lg border border-gray-100 p-10 mt-12">
+  <div class="flex items-center justify-between mb-8">
+    <h2 class="text-3xl font-semibold text-gray-900">
+      Comments (<%= post.comments.count %>)
+    </h2>
+  </div>
+
+  <% if post.comments.any? %>
+    <div class="divide-y divide-gray-100">
+      <% post.comments.roots.each do |comment| %>
+        <%= render "comments/comment", comment: comment %>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="text-center py-16">
+      <p class="text-gray-500 italic text-lg">
+        No comments yet. <span class="not-italic text-blue-600 font-medium">Be the first to reply!</span>
+      </p>
+    </div>
+  <% end %>
+
+  <!-- New Comment Form -->
+  <% if user_signed_in? %>
+    <div class="mt-10 pt-8 border-t border-gray-200">
+      <div class="flex items-start space-x-4">
+        <div class="flex-shrink-0">
+          <div class="w-10 h-10 flex items-center justify-center rounded-full bg-blue-100 text-blue-700 font-semibold">
+            <%= current_user.name[0].upcase %>
+          </div>
+        </div>
+        <div class="flex-1">
+          <%= form_with(model: [post, Comment.new], local: true, class: "space-y-4") do |form| %>
+            <%= form.text_area :body,
+                rows: 4,
+                class: "w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 transition shadow-sm px-4 py-3 text-gray-800 placeholder-gray-400",
+                placeholder: "Write a thoughtful comment..." %>
+
+            <div class="flex justify-end">
+              <%= form.submit "Post Comment",
+                  class: "bg-blue-600 hover:bg-blue-700 text-white text-base font-medium px-6 py-2.5 rounded-xl shadow-sm transition" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% else %>
+    <p class="mt-10 text-gray-500 text-center text-lg">
+      <%= link_to "Sign in", new_user_session_path, class: "text-blue-600 hover:underline font-medium" %>
+      to join the discussion.
+    </p>
+  <% end %>
+</div>

@@ -6,6 +6,6 @@ pin "@hotwired/stimulus", to: "stimulus.min.js"
 pin "@hotwired/stimulus-loading", to: "stimulus-loading.js"
 pin_all_from "app/javascript/controllers", under: "controllers"
 pin "flowbite", to: "https://unpkg.com/flowbite@2.5.1/dist/flowbite.turbo.js"
-# config/importmap.rb
 pin "@popperjs/core", to: "https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/esm/index.js"
 pin "flowbite-datepicker" # @1.3.2
+
