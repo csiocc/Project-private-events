@@ -76,3 +76,5 @@ gem "heroicon-rails", "~> 0.2.9"
 gem "devise", "~> 4.9"
 
 gem "flowbite", "~> 3.1"
+
+gem "geocoder", "~> 1.8"

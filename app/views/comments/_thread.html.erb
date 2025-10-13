@@ -1,0 +1,25 @@
+<% username = comment.user&.name.presence || "Unknown" %>
+
+<div id="<%= dom_id(comment) %>" class="border-l border-gray-200 pl-4 ml-2 mt-3">
+  <div class="flex items-center space-x-3 mb-1">
+    <div class="w-6 h-6 flex items-center justify-center rounded-full bg-gray-100 text-gray-700 text-xs font-medium">
+      <%= username[0].upcase %>
+    </div>
+    <span class="font-medium text-gray-800 text-sm"><%= username %></span>
+    <span class="text-gray-400 text-xs">
+      • <%= time_ago_in_words(comment.created_at) %> ago
+    </span>
+  </div>
+
+  <p class="text-gray-700 text-sm leading-relaxed mb-2">
+    <%= comment.body %>
+  </p>
+
+  <% if comment.replies.any? %>
+    <div class="mt-2 space-y-2">
+      <% comment.replies.each do |reply| %>
+        <%= render "comments/thread", comment: reply %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

@@ -34,7 +34,7 @@
             aria-expanded="false"
             aria-controls="comments_<%= post.id %>">
       <span data-collapse-target="label" class="font-medium">
-        Comments (<%= post.comments.where(parent_id: nil).count %>)
+        Comments (<%= post.comments.count %>)
       </span>
       <svg data-collapse-target="chevron"
            class="w-4 h-4 transition-transform duration-200"
@@ -49,17 +49,18 @@
 
   <!-- Collapsible Comments -->
   <div id="comments_<%= post.id %>"
-       class="hidden mt-5 space-y-5"
-       data-collapse-target="panel"
-       aria-hidden="true">
+      class="hidden mt-5 space-y-5"
+      data-collapse-target="panel"
+      aria-hidden="true">
     <% roots = post.comments.where(parent_id: nil).order(:created_at) %>
     <% if roots.any? %>
       <% roots.each do |comment| %>
-        <div class="border-t border-gray-200 pt-3">
-          <p class="text-gray-800 text-base sm:text-lg leading-relaxed"><%= comment.body %></p>
-          <p class="text-sm text-gray-500 mt-1">
-            — <%= comment.user&.name.presence || "Anonymous" %>, <%= time_ago_in_words(comment.created_at) %> ago
-          </p>
+        <%= render "comments/thread", comment: comment %>
+      <% end %>
+      <% if post.comments.count > 5 %>
+        <div class="text-center mt-4">
+          <%= link_to "View full discussion →", post_path(post),
+              class: "text-blue-600 hover:underline text-sm font-medium" %>
         </div>
       <% end %>
     <% else %>

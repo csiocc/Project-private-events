@@ -19,7 +19,26 @@ class User < ApplicationRecord
   has_many :comments, inverse_of: :user, dependent: :destroy
 
   # validations
+  geocoded_by :location
+  validate :location_must_exist
   validates :name, presence: true, uniqueness: true
   validates :email, presence: true, uniqueness: true
+  validates :profile_text, length: { maximum: 1000 }
+  validates :gender, inclusion: { in: %w[male female other], allow_blank: true }
+  validates :show_gender_preferences, inclusion: { in: %w[men women both], allow_blank: true }
+  
+  private
 
+    def location_must_exist
+      return if location.blank?
+
+      result = Geocoder.search(location).first
+
+      if result.nil?
+        errors.add(:location, "existiert nicht oder konnte nicht gefunden werden")
+      else
+        self.latitude  = result.latitude
+        self.longitude = result.longitude
+      end
+    end
 end

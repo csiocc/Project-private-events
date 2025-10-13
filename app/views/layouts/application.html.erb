@@ -27,12 +27,6 @@
     <div>
       <%= render "shared/header_bar" %>
     </div>
-      <% if notice %>
-        <p class="alert alert-success"><%= notice %></p>
-      <% end %>
-      <% if alert %>
-        <p class="alert alert-danger"><%= alert %></p>
-      <% end %>
     <main class="relative flex flex-col w-full bg-gray-400">
 
       <%= yield %>

@@ -1,11 +1,11 @@
 <div class="w-screen h-auto bg-white p-4 shadow-md border-solid border-1">
   <div class="flex items-centerjustify-between mx-auto">
 
+    <!-- Navigation links(suchleiste) -->
     <div class="flex-shrink-0">
       <%= render 'shared/logo' %>
     </div>
 
-    <!-- Navigation links(suchleiste) -->
     <div class="flex-1 justify-start min-w-0">
       <div class="search-bar">
         <div class="flex items-center bg-gray-100 rounded-full px-3 py-1 w-full max-w-md focus-within:ring-2 focus-within:ring-blue-400">
@@ -35,6 +35,7 @@
         <%= link_to 'Posts', posts_path, class: "text-gray-800 hover:text-gray-600" %>
         <%= link_to 'Events', events_path, class: "text-gray-800 hover:text-gray-600" %>
         <% if user_signed_in? %>
+          <%= link_to 'Profil', edit_user_registration_path%>
           <%= link_to 'Logout', destroy_user_session_path, data: { turbo_method: :delete }, class: "text-gray-800 hover:text-gray-600" %>
         <% else %>
           <%= link_to 'Login', new_user_session_path, class: "text-gray-800 hover:text-gray-600" %>
