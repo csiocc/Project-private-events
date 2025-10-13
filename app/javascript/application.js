@@ -1,4 +1,4 @@
-// app/javascript/application.js
+// Zentrale Einstiegspunkt für alle JS-Funktionen
 
 import "@hotwired/turbo-rails"
 import * as ActiveStorage from "@rails/activestorage"
@@ -11,5 +11,5 @@ eagerLoadControllersFrom("controllers", application)
 
 import "flowbite"
 
-// debug check
+// Debug: check global ActiveStorage
 console.log("ActiveStorage globally available:", typeof window.ActiveStorage)

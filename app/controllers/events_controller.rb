@@ -1,25 +1,29 @@
 class EventsController < ApplicationController
+  before_action :authenticate_user!, except: [:index, :show]
   before_action :set_event, only: %i[ show edit update destroy ]
 
   # GET /events or /events.json
-  def index
-    @events = Event.all
+def index
+  @events = Event.all
+  @events = @events.where(event_type: params[:type]) if params[:type].present?
 
-    # Filter nach Typ
-    if params[:type].present?
-      @events = @events.where(event_type: params[:type])
-    end
+  # Sortierung nach 'date' oder Fallback zu 'created_at'
+  case params[:sort]
+  when "date_asc"
+    @events = @events.order(date: :asc)
+  when "date_desc"
+    @events = @events.order(date: :desc)
+  else
+    @events = @events.order(created_at: :desc)
+  end
 
-    # Sortierung
-    case params[:sort]
-    when "date_asc"
-      @events = @events.order(date: :asc)
-    when "date_desc"
-      @events = @events.order(date: :desc)
-    else
-      @events = @events.order(created_at: :desc)
+  respond_to do |format|
+    format.html # events/index.html.erb
+    format.json do
+      render json: @events.as_json(only: [:id, :title, :description, :event_type, :date])
     end
   end
+end
 
   # GET /events/1 or /events/1.json
   def show
@@ -36,50 +40,38 @@ class EventsController < ApplicationController
 
   # POST /events or /events.json
   def create
-    @event = Event.new(event_params)
+    @event = current_user.created_events.build(event_params)
 
-    respond_to do |format|
-      if @event.save
-        format.html { redirect_to @event, notice: "Event was successfully created." }
-        format.json { render :show, status: :created, location: @event }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @event.errors, status: :unprocessable_entity }
-      end
+    if @event.save
+      redirect_to @event, notice: "Event erfolgreich erstellt!"
+    else
+      render :new, status: :unprocessable_entity
     end
   end
 
   # PATCH/PUT /events/1 or /events/1.json
   def update
-    respond_to do |format|
-      if @event.update(event_params)
-        format.html { redirect_to @event, notice: "Event was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @event }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @event.errors, status: :unprocessable_entity }
-      end
+    if @event.update(event_params)
+      redirect_to @event, notice: "Event erfolgreich aktualisiert!"
+    else
+      render :edit, status: :unprocessable_entity
     end
   end
 
   # DELETE /events/1 or /events/1.json
   def destroy
-    @event.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to events_path, notice: "Event was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
-    end
+    @event.destroy
+    redirect_to events_path, notice: "Event gelöscht."
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_event
-      @event = Event.find(params.expect(:id))
+      @event = Event.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def event_params
-      params.expect(event: [ :location, :date ])
+      params.require(:event).permit(:title, :description, :date, :location, :event_type)
     end
 end

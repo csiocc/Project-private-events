@@ -1,4 +1,7 @@
-<div class="max-w-6xl mx-auto py-10 px-4">
+<div class="max-w-6xl mx-auto py-10 px-4"
+     data-controller="event-filter"
+     data-event-filter-url-value="<%= events_path(format: :json) %>">
+
   <div class="flex justify-between items-center mb-6">
     <h1 class="text-3xl font-bold text-gray-800">Alle Events</h1>
 
@@ -12,69 +15,32 @@
     <div>
       <label for="event_type" class="block text-sm font-medium text-gray-700">Event-Typ</label>
       <select id="event_type"
-              name="type"
-              class="mt-1 border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+              class="mt-1 border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+              data-event-filter-target="type"
+              data-action="change->event-filter#update">
         <option value="">Alle</option>
-        <option value="catsitting" <%= "selected" if params[:type] == "catsitting" %>>Catsitting</option>
-        <option value="dogsitting" <%= "selected" if params[:type] == "dogsitting" %>>Dogsitting</option>
-        <option value="party" <%= "selected" if params[:type] == "party" %>>Party</option>
-        <option value="dating" <%= "selected" if params[:type] == "dating" %>>Dating</option>
+        <option value="catsitting">Catsitting</option>
+        <option value="dogsitting">Dogsitting</option>
+        <option value="party">Party</option>
+        <option value="dating">Dating</option>
       </select>
     </div>
 
     <div>
       <label for="sort_date" class="block text-sm font-medium text-gray-700">Sortierung</label>
       <select id="sort_date"
-              name="sort"
-              class="mt-1 border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500">
+              class="mt-1 border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+              data-event-filter-target="sort"
+              data-action="change->event-filter#update">
         <option value="">Standard</option>
-        <option value="date_asc" <%= "selected" if params[:sort] == "date_asc" %>>Datum ↑</option>
-        <option value="date_desc" <%= "selected" if params[:sort] == "date_desc" %>>Datum ↓</option>
+        <option value="date_asc">Datum ↑</option>
+        <option value="date_desc">Datum ↓</option>
       </select>
     </div>
-
-    <%= button_to "Filter anwenden",
-                  events_path,
-                  method: :get,
-                  params: { type: params[:type], sort: params[:sort] },
-                  class: "self-end bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 rounded-lg shadow-sm" %>
   </div>
 
   <!-- Eventliste -->
-  <% if @events.any? %>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <% @events.each do |event| %>
-        <div class="bg-white rounded-xl shadow hover:shadow-lg transition p-4">
-          <div class="flex justify-between items-center mb-2">
-            <h2 class="text-xl font-semibold text-gray-800"><%= event.title %></h2>
-            <span class="px-2 py-1 text-sm rounded-full 
-                         <%= case event.event_type
-                              when 'catsitting' then 'bg-yellow-100 text-yellow-800'
-                              when 'dogsitting' then 'bg-green-100 text-green-800'
-                              when 'party' then 'bg-purple-100 text-purple-800'
-                              when 'dating' then 'bg-pink-100 text-pink-800'
-                              else 'bg-gray-100 text-gray-700'
-                            end %>">
-              <%= event.event_type.capitalize %>
-            </span>
-          </div>
-
-          <p class="text-gray-600 text-sm mb-3"><%= truncate(event.description, length: 100) %></p>
-          <p class="text-gray-500 text-xs">
-            📅 <%= event.date.strftime("%d.%m.%Y") if event.date %>
-          </p>
-
-          <div class="mt-4 flex justify-between items-center">
-            <%= link_to "Details", event_path(event),
-                        class: "text-blue-600 hover:text-blue-800 text-sm font-medium" %>
-
-            <%= link_to "Bearbeiten", edit_event_path(event),
-                        class: "text-gray-500 hover:text-gray-700 text-sm" %>
-          </div>
-        </div>
-      <% end %>
-    </div>
-  <% else %>
-    <p class="text-gray-500 text-center mt-8">Keine Events gefunden.</p>
-  <% end %>
+<div data-event-filter-target="list" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+  <%= render partial: "events/event_card", collection: @events, as: :event %>
+</div>
 </div>
