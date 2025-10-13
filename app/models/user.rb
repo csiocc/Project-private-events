@@ -18,6 +18,20 @@ class User < ApplicationRecord
   has_many :posts, inverse_of: :user, dependent: :destroy
   has_many :comments, inverse_of: :user, dependent: :destroy
 
+  # images
+  
+  has_many_attached :photos
+
+  serialize :image_order, coder: JSON
+
+  def ordered_photos
+    return photos unless image_order.present?
+
+    ordered_ids = image_order.map(&:to_i)
+    sorted = photos.sort_by { |p| ordered_ids.index(p.id) || photos.size }
+    sorted.compact
+  end
+
   # validations
   geocoded_by :location
   validate :location_must_exist
@@ -26,19 +40,25 @@ class User < ApplicationRecord
   validates :profile_text, length: { maximum: 1000 }
   validates :gender, inclusion: { in: %w[male female other], allow_blank: true }
   validates :show_gender_preferences, inclusion: { in: %w[men women both], allow_blank: true }
-  
+
+
+
   private
 
     def location_must_exist
       return if location.blank?
 
-      result = Geocoder.search(location).first
+      results = Geocoder.search(location)
+      result = results.first
 
-      if result.nil?
+      if results.empty? || result.nil?
         errors.add(:location, "existiert nicht oder konnte nicht gefunden werden")
+        throw(:abort)
       else
         self.latitude  = result.latitude
         self.longitude = result.longitude
       end
     end
+
+
 end

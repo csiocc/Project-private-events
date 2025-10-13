@@ -1,0 +1,10 @@
+<% if current_user.errors.any? %>
+  <div class="bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-lg shadow-sm mb-6">
+    <h3 class="font-semibold mb-2">Bitte überprüfe folgende Fehler:</h3>
+    <ul class="list-disc list-inside text-sm">
+      <% current_user.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

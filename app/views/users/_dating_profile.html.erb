@@ -1,70 +1,88 @@
-<div class="bg-white rounded-2xl shadow-md border border-gray-100 p-8 w-full max-w-2xl mx-auto space-y-6">
-  <h2 class="text-2xl font-semibold text-gray-800 mb-4">
-    Dating Profile
-  </h2>
 
-  <%= form_with(model: current_user, url: user_path(current_user), method: :patch, local: true, class: "space-y-6") do |f| %>
+<main class="min-h-screen bg-gray-100 py-12 px-6 flex flex-col items-center">
+  <div class="w-full max-w-3xl bg-white rounded-2xl shadow-md border border-gray-100 p-10 space-y-10">
 
-    
-    <!-- Wohnort -->
-    <div>
-      <%= f.label :location, "Wohnort", class: "block text-gray-700 font-medium mb-1" %>
-      <%= f.text_field :location,
-            placeholder: "z. B. Zürich, Schweiz",
-            class: "w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 transition shadow-sm px-4 py-2 text-gray-800" %>
+    <!-- Titel -->
+    <div class="border-b border-gray-200 pb-4">
+      <h2 class="text-3xl font-semibold text-gray-800">
+        Edit Dating Profile
+      </h2>
+      <p class="text-gray-500 text-sm mt-1">
+        Update your dating profile information below.
+      </p>
     </div>
+    <%= render "photo_form" %>
+    <%= render "error"%>
+    <!-- Formular -->
+    <%= form_with(model: current_user, url: user_path(current_user), method: :patch, local: true, class: "space-y-6") do |f| %>
 
-    <!-- Profiltext -->
-    <div>
-      <%= f.label :profile_text, "Profiltext", class: "block text-gray-700 font-medium mb-1" %>
-      <%= f.text_area :profile_text,
-            rows: 5,
-            placeholder: "Erzähl etwas über dich...",
-            class: "w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 transition shadow-sm px-4 py-3 text-gray-800" %>
-    </div>
-
-    <!-- Gender -->
-    <div>
-      <label class="block text-gray-700 font-medium mb-2">Gender</label>
-      <div class="flex items-center space-x-6">
-        <label class="flex items-center space-x-2">
-          <%= f.radio_button :gender, "male", class: "text-blue-600 focus:ring-blue-400" %>
-          <span>männlich</span>
-        </label>
-        <label class="flex items-center space-x-2">
-          <%= f.radio_button :gender, "female", class: "text-blue-600 focus:ring-blue-400" %>
-          <span>weiblich</span>
-        </label>
-        <label class="flex items-center space-x-2">
-          <%= f.radio_button :gender, "other", class: "text-blue-600 focus:ring-blue-400" %>
-          <span>anderes</span>
-        </label>
+      <!-- Wohnort -->
+      <div>
+        <%= f.label :location, "Wohnort", class: "block text-gray-700 font-medium mb-1" %>
+        <%= f.text_field :location,
+              placeholder: "z. B. Zürich, Schweiz",
+              class: "w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 transition shadow-sm px-4 py-2 text-gray-800" %>
       </div>
-    </div>
 
-    <!-- Anzeige-Präferenzen -->
-    <div>
-      <label class="block text-gray-700 font-medium mb-2">Was willst du angezeigt bekommen?</label>
-      <div class="flex items-center space-x-6">
-        <label class="flex items-center space-x-2">
-          <%= f.radio_button :show_gender_preferences, "men", class: "text-blue-600 focus:ring-blue-400" %>
-          <span>Männer</span>
-        </label>
-        <label class="flex items-center space-x-2">
-          <%= f.radio_button :show_gender_preferences, "women", class: "text-blue-600 focus:ring-blue-400" %>
-          <span>Frauen</span>
-        </label>
-        <label class="flex items-center space-x-2">
-          <%= f.radio_button :show_gender_preferences, "both", class: "text-blue-600 focus:ring-blue-400" %>
-          <span>Beides</span>
-        </label>
+      <!-- Profiltext -->
+      <div>
+        <%= f.label :profile_text, "Profiltext", class: "block text-gray-700 font-medium mb-1" %>
+        <p class="text-xs text-gray-400 mb-2">(Erzähl etwas über dich, max. 1000 Zeichen)</p>
+        <%= f.text_area :profile_text,
+              rows: 5,
+              placeholder: "Erzähl etwas über dich...",
+              class: "w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 transition shadow-sm px-4 py-3 text-gray-800" %>
       </div>
+
+      <!-- Gender -->
+      <div>
+        <label class="block text-gray-700 font-medium mb-2">Gender</label>
+        <div class="flex flex-wrap gap-x-6 gap-y-3">
+          <label class="flex items-center space-x-2">
+            <%= f.radio_button :gender, "male", class: "text-blue-600 focus:ring-blue-400" %>
+            <span>männlich</span>
+          </label>
+          <label class="flex items-center space-x-2">
+            <%= f.radio_button :gender, "female", class: "text-blue-600 focus:ring-blue-400" %>
+            <span>weiblich</span>
+          </label>
+          <label class="flex items-center space-x-2">
+            <%= f.radio_button :gender, "other", class: "text-blue-600 focus:ring-blue-400" %>
+            <span>anderes</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Anzeige-Präferenzen -->
+      <div>
+        <label class="block text-gray-700 font-medium mb-2">Was willst du angezeigt bekommen?</label>
+        <div class="flex flex-wrap gap-x-6 gap-y-3">
+          <label class="flex items-center space-x-2">
+            <%= f.radio_button :show_gender_preferences, "men", class: "text-blue-600 focus:ring-blue-400" %>
+            <span>Männer</span>
+          </label>
+          <label class="flex items-center space-x-2">
+            <%= f.radio_button :show_gender_preferences, "women", class: "text-blue-600 focus:ring-blue-400" %>
+            <span>Frauen</span>
+          </label>
+          <label class="flex items-center space-x-2">
+            <%= f.radio_button :show_gender_preferences, "both", class: "text-blue-600 focus:ring-blue-400" %>
+            <span>Beides</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <div class="flex justify-end">
+        <%= f.submit "Profil speichern",
+              class: "bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2.5 rounded-xl shadow-sm transition" %>
+      </div>
+    <% end %>
+
+    <!-- Zurück-Link -->
+    <div class="text-center border-t border-gray-200 pt-8">
+      <%= link_to "← Zurück", user_path(current_user), class: "text-blue-600 hover:underline text-sm font-medium" %>
     </div>
 
-    <!-- Submit -->
-    <div class="flex justify-end">
-      <%= f.submit "Profil speichern",
-            class: "bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2.5 rounded-xl shadow-sm transition" %>
-    </div>
-  <% end %>
-</div>
+  </div>
+</main>

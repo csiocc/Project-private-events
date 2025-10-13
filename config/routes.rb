@@ -7,7 +7,11 @@ Rails.application.routes.draw do
   resources :posts do
     resources :comments, only: [:create, :edit, :update, :destroy]
   end
-  resources :users
+  resources :users do
+    patch :update_photo_order, on: :member
+    delete :remove_photo, on: :member
+    post :attach_photo
+  end
   resources :events
 
   root "main_pages#index"

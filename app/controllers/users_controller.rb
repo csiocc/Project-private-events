@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_user, only: %i[ show edit update destroy ]
 
   # GET /users or /users.json
@@ -36,18 +37,44 @@ class UsersController < ApplicationController
     end
   end
 
-  # PATCH/PUT /users/1 or /users/1.json
+  # PATCH/PUT /users/1
   def update
-    respond_to do |format|
-      if @user.update(user_params)
-        format.html { redirect_to @user, notice: "User was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @user }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @user.errors, status: :unprocessable_entity }
-      end
+    if @user.update(user_params)
+      flash[:notice] = "Profil erfolgreich aktualisiert."
+      redirect_to user_path(@user)
+    else
+      flash.now[:alert] = "Es gab ein Problem beim Speichern. Bitte überprüfe deine Eingaben."
+      render :edit, status: :unprocessable_entity
     end
   end
+
+  def update_photo_order
+    @user = current_user
+    if @user.update(image_order: params[:order])
+      head :ok
+    else
+      render json: { error: "Konnte Reihenfolge nicht speichern" }, status: :unprocessable_entity
+    end
+  end
+
+  def remove_photo
+    @user = current_user
+    photo = @user.photos.find_by_id(params[:photo_id])
+    if photo.present?
+      photo.purge # ActiveStorage entfernt die Datei
+      head :ok
+    else
+      render json: { error: "Photo not found" }, status: :not_found
+    end
+  end
+
+  def attach_photo
+    @user = current_user
+    @user.photos.attach(params[:signed_id])
+    head :ok
+  end
+
+
 
   # DELETE /users/1 or /users/1.json
   def destroy
@@ -65,8 +92,12 @@ class UsersController < ApplicationController
       @user = User.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
-    def user_params
-      params.expect(user: [ :name, :email ])
-    end
+  def user_params
+    params.require(:user).permit(
+      :name, :email, :profile_text, :location, :gender, :show_gender_preferences,
+      photos: [], image_order: []
+    )
+  end
+
+
 end

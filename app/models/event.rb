@@ -5,11 +5,12 @@ class Event < ApplicationRecord
   #jointable for guests
   has_many :event_guests, through: :invites, source: :event_guests, dependent: :destroy
   # guests of the event
-  has_many :guests, through: :event_guests, source: :user  
+  has_many :guests, through: :event_guests, source: :user
+
+  # event type
+  enum :event_type, { catsitting: 0, dogsitting: 1, party: 2, dating: 3 }
 
   # validations
-  validates :title, presence: true
-  validates :description, presence: true
-  validates :location, presence: true
-  validates :date, presence: true
+  validates :title, :date, :description, :location, :event_type, presence: true
+
 end

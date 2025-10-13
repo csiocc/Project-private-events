@@ -4,6 +4,21 @@ class EventsController < ApplicationController
   # GET /events or /events.json
   def index
     @events = Event.all
+
+    # Filter nach Typ
+    if params[:type].present?
+      @events = @events.where(event_type: params[:type])
+    end
+
+    # Sortierung
+    case params[:sort]
+    when "date_asc"
+      @events = @events.order(date: :asc)
+    when "date_desc"
+      @events = @events.order(date: :desc)
+    else
+      @events = @events.order(created_at: :desc)
+    end
   end
 
   # GET /events/1 or /events/1.json
