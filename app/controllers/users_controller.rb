@@ -2,6 +2,7 @@ class UsersController < ApplicationController
   before_action :authenticate_user!
   before_action :set_user, only: %i[ show edit update destroy ]
 
+
   # GET /users or /users.json
   def index
     @users = User.all
@@ -154,6 +155,19 @@ end
     @user = User.find(params[:id])
     # Optional: create a Dislike model, oder ignoriere einfach
     redirect_to swiper_users_path
+  end
+
+  def assign_random_event_invites
+    # Wähle 2 zufällige Events aus der Datenbank
+    events = Event.order("RANDOM()").limit(2)
+    events.each do |event|
+      invites.create(
+        event: event,
+        answer: :pending,
+        title: "Automatische Einladung",
+        body: "Willkommen! Du bist zu diesem Event eingeladen."
+      )
+    end
   end
 
   private

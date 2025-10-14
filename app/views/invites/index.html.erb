@@ -1,11 +1,12 @@
 <%= render "shared/profil_header" %>
-<h2 class="text-2xl font-bold mb-6">Deine Event-Einladungen</h2>
+<h2 class="text-2xl font-bold mb-6 text-center">Deine Event-Einladungen</h2>
 
 <% if @invites.any? %>
   <ul class="space-y-6">
     <% @invites.each do |invite| %>
       <li class="p-4 bg-white rounded-xl shadow-md flex items-center justify-between">
-        <div>
+        <div id="center-helper" class="w-1/3"></div>
+        <div class="w-1/3">
           <strong><%= invite.title %></strong>
           <br>
           <span class="text-gray-600">
@@ -23,7 +24,7 @@
           </span>
         </div>
         <% if invite.pending? %>
-          <div class="flex gap-2">
+          <div class="flex flex-col sm:flex-row gap-2">
             <%= button_to "Annehmen", accept_invite_path(invite), method: :post, class: "bg-green-500 px-3 py-2 text-white rounded-lg" %>
             <%= button_to "Ablehnen", decline_invite_path(invite), method: :post, class: "bg-red-500 px-3 py-2 text-white rounded-lg" %>
           </div>

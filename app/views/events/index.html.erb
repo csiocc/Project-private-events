@@ -37,6 +37,19 @@
         <option value="date_desc">Datum ↓</option>
       </select>
     </div>
+
+    <div>
+      <label for="sort_date" class="block text-sm font-medium text-gray-700">Zeitpunkt</label>
+      <select id="sort_date"
+              class="mt-1 border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:ring-blue-500 focus:border-blue-500"
+              data-event-filter-target="date"
+              data-action="change->event-filter#update">
+        <option value="">Alle</option>
+        <option value="upcomming_events">Kommende</option>
+        <option value="past_events">Vergangene</option>
+      </select>
+    </div>
+
   </div>
 
   <!-- Eventliste -->

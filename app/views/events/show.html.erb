@@ -17,6 +17,9 @@
       <span class="font-semibold">Erstellt von:</span>
       <span><%= link_to @event.creator.name, user_path(@event.creator), class: "text-blue-600 hover:underline" %></span>
     </div>
+    <%= link_to "Bearbeiten",
+                edit_event_path(@event),
+                class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl shadow transition" %>
   </div>
 
   <!-- Teilnehmerliste -->

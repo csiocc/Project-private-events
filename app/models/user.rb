@@ -3,13 +3,10 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
-
+  ### relationships
   # event creator relationship
   has_many :created_events, class_name: "Event", foreign_key: :creator_id, inverse_of: :creator, dependent: :destroy
   has_many :invites
-
-  # jointable for guests
-  has_many :event_guests, inverse_of: :user, dependent: :destroy
 
   # is guest of a event
   has_many :upcomming_events, through: :event_guests, source: :event
@@ -31,6 +28,17 @@ class User < ApplicationRecord
   has_many :liked_users, through: :likes_given, source: :liked
   has_many :likers, through: :likes_received, source: :liker
 
+  ### validations
+  geocoded_by :location
+  validate :location_must_exist
+  validates :name, presence: true, uniqueness: true
+  validates :email, presence: true, uniqueness: true
+  validates :profile_text, length: { maximum: 1000 }
+  validates :gender, inclusion: { in: %w[male female other], allow_blank: true }
+  validates :show_gender_preferences, inclusion: { in: %w[men women both], allow_blank: true }
+
+
+  ### methods
   # is user x following me?
   def following?(other_user)
     following.include?(other_user)
@@ -68,16 +76,19 @@ class User < ApplicationRecord
     Invite.where(event_id: created_events.pluck(:id))
   end
 
-  # validations
-  geocoded_by :location
-  validate :location_must_exist
-  validates :name, presence: true, uniqueness: true
-  validates :email, presence: true, uniqueness: true
-  validates :profile_text, length: { maximum: 1000 }
-  validates :gender, inclusion: { in: %w[male female other], allow_blank: true }
-  validates :show_gender_preferences, inclusion: { in: %w[men women both], allow_blank: true }
+  after_create :assign_random_event_invites
 
-
+  def assign_random_event_invites
+    events = Event.order("RANDOM()").limit(2)
+    events.each do |event|
+      invites.create(
+        event: event,
+        answer: :pending,
+        title: "Automatische Einladung",
+        body: "Willkommen! Du bist zu diesem Event eingeladen."
+      )
+    end
+  end
 
   private
 

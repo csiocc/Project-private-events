@@ -9,4 +9,8 @@ class Event < ApplicationRecord
   # validations
   validates :title, :date, :description, :location, :event_type, presence: true
 
+  # scopes eig überflüssig, da im Controller gefiltert wird aber egal
+  scope :past_events, -> { where("date < ?", Time.current).order(date: :desc) }
+  scope :upcoming_events, -> { where("date >= ?", Time.current).order(date: :asc) }
+
 end

@@ -1,15 +1,16 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["list", "type", "sort"]
+  static targets = ["list", "type", "sort", "date"]
   static values = { url: String }
 
   update() {
     const type = this.typeTarget.value
     const sort = this.sortTarget.value
+    const date = this.dateTarget.value
 
     // baue URL
-    const url = `${this.urlValue}?type=${type}&sort=${sort}`
+    const url = `${this.urlValue}?type=${type}&sort=${sort}&date=${date}`
 
     fetch(url)
       .then(response => response.json())

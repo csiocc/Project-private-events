@@ -7,6 +7,14 @@ def index
   @events = Event.all
   @events = @events.where(event_type: params[:type]) if params[:type].present?
 
+  # Zeitpunkt-Filter
+  case params[:date]
+  when "upcoming_events"
+    @events = @events.where("date >= ?", Date.today)
+  when "past_events"
+    @events = @events.where("date < ?", Date.today)
+  end
+
   # Sortierung nach 'date' oder Fallback zu 'created_at'
   case params[:sort]
   when "date_asc"
