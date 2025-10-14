@@ -1,26 +1,14 @@
-// Zentrale Einstiegspunkt für alle JS-Funktionen
-
+// app/javascript/application.js
 import "@hotwired/turbo-rails"
-import "./controllers"
 import * as ActiveStorage from "@rails/activestorage"
-window.ActiveStorage = ActiveStorage
 ActiveStorage.start()
 
-import { application } from "./controllers/application"
-eagerLoadControllersFrom("controllers", application)
-
+import "./controllers"     // <- wichtig: relativ, KEIN alias
 import "flowbite"
 
-// Debug: check global ActiveStorage
-console.log("ActiveStorage globally available:", typeof window.ActiveStorage)
-
-
-document.addEventListener("DOMContentLoaded", function() {
-  const toggle = document.getElementById('menu-toggle');
-  const menu = document.getElementById('mobile-menu');
-  if (toggle && menu) {
-    toggle.addEventListener('click', function() {
-      menu.classList.toggle('hidden');
-    });
-  }
-});
+// Falls du DOM-Init brauchst, nimm turbo:load (nicht DOMContentLoaded)
+document.addEventListener("turbo:load", () => {
+  const toggle = document.getElementById("menu-toggle")
+  const menu = document.getElementById("mobile-menu")
+  if (toggle && menu) toggle.addEventListener("click", () => menu.classList.toggle("hidden"))
+})

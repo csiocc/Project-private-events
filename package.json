@@ -1,16 +1,17 @@
 {
   "dependencies": {
-    
     "@hotwired/stimulus": "^3.2.2",
     "@hotwired/turbo-rails": "^8.0.18",
     "@rails/activestorage": "^8.0.300",
     "esbuild": "^0.25.10",
     "flowbite": "^3.1.2",
+    "sortablejs": "^1.15.6",
     "tailwindcss": "^4.1.14"
   },
-  "engines": { "node": "24.x" },
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
     "build": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets"
   }
 }
-

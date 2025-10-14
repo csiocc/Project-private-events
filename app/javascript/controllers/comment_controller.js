@@ -1,6 +1,6 @@
 // app/javascript/controllers/photo_upload_controller.js
 import { Controller } from "@hotwired/stimulus"
-import Sortable from "sortablejs"
+import Sortable from "sortablejs/modular/sortable.core.esm.js"
 
 // Stimulus controller for Tinder-style photo uploads
 export default class extends Controller {

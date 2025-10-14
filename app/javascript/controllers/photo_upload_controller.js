@@ -1,5 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
-import Sortable from "sortablejs"
+import Sortable from "sortablejs/modular/sortable.core.esm.js"
 
 export default class extends Controller {
   static targets = ["input", "list"]
