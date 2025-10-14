@@ -5,8 +5,8 @@ import * as ActiveStorage from "@rails/activestorage"
 window.ActiveStorage = ActiveStorage
 ActiveStorage.start()
 
-import { application } from "controllers/application"
-import { eagerLoadControllersFrom } from "@hotwired/stimulus-loading"
+import { application } from "./controllers/application"
+import { eagerLoadControllersFrom } from "@hotwired/stimulus/dist/stimulus-loading"
 eagerLoadControllersFrom("controllers", application)
 
 import "flowbite"
