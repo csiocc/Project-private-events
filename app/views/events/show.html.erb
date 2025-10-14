@@ -1,10 +1,46 @@
-<p style="color: green"><%= notice %></p>
+<div class="max-w-3xl mx-auto py-8">
+  <!-- Event-Titel und Infos -->
+  <div class="bg-white shadow-md rounded-lg p-6 mb-6">
+    <h1 class="text-3xl font-bold mb-2"><%= @event.title %></h1>
+    <div class="text-gray-600 mb-2 flex items-center gap-2">
+      <span class="font-semibold">Datum:</span>
+      <span><%= l(@event.date, format: :long) %></span>
+      <span class="font-semibold ml-4">Ort:</span>
+      <span><%= @event.location %></span>
+    </div>
+    <div class="mb-2"><%= @event.description %></div>
+    <div class="mb-2">
+      <span class="font-semibold">Typ:</span>
+      <span><%= @event.event_type %></span>
+    </div>
+    <div class="mb-2">
+      <span class="font-semibold">Erstellt von:</span>
+      <span><%= link_to @event.creator.name, user_path(@event.creator), class: "text-blue-600 hover:underline" %></span>
+    </div>
+  </div>
 
-<%= render @event %>
-
-<div>
-  <%= link_to "Edit this event", edit_event_path(@event) %> |
-  <%= link_to "Back to events", events_path %>
-
-  <%= button_to "Destroy this event", @event, method: :delete %>
+  <!-- Teilnehmerliste -->
+  <div class="bg-white shadow rounded-lg p-6">
+    <h2 class="text-2xl font-bold mb-4">Teilnehmer</h2>
+    <% accepted_invites = @event.invites.accepted.includes(:user) %>
+    <% if accepted_invites.any? %>
+      <ul class="space-y-2">
+        <% accepted_invites.each do |invite| %>
+          <li class="flex items-center gap-3">
+            <% if invite.user.photos.attached? %>
+              <%= image_tag invite.user.photos.first.variant(resize_to_fill: [40, 40]), class: "rounded-full w-10 h-10 object-cover" %>
+            <% else %>
+              <div class="rounded-full w-10 h-10 bg-gray-200 flex items-center justify-center font-bold text-gray-500">
+                <%= invite.user.name.first.upcase %>
+              </div>
+            <% end %>
+            <%= link_to invite.user.name, user_path(invite.user), class: "font-semibold text-gray-800 hover:underline" %>
+            <span class="text-xs text-green-500 ml-2">Zugesagt</span>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p class="text-gray-500">Noch keine Teilnehmer.</p>
+    <% end %>
+  </div>
 </div>

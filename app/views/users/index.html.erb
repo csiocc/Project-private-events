@@ -21,7 +21,7 @@
       <% @users.order(:name).each do |user| %>
         <div class="flex items-center justify-between py-4 px-2 transition hover:bg-gray-50 user-row" data-name="<%= user.name.downcase %>" data-email="<%= user.email.downcase %>">
           <div>
-            <span class="font-semibold text-lg text-gray-800"><%= user.name %></span>
+            <%= link_to user.name, dating_profile_path(user), class: "font-semibold text-lg text-pink-700 hover:underline" %>
             <span class="ml-2 text-sm text-gray-500"><%= user.email %></span>
           </div>
           <div>

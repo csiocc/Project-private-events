@@ -1,8 +1,6 @@
 class Invite < ApplicationRecord
   belongs_to :user
+  belongs_to :event
 
-  has_many :event_guests, dependent: :destroy
-
-  # validations
-  validates :user_id, presence: true
+  enum :answer, { pending: 0, accepted: 1, declined: 2 }
 end

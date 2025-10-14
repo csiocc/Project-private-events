@@ -6,7 +6,7 @@ class User < ApplicationRecord
 
   # event creator relationship
   has_many :created_events, class_name: "Event", foreign_key: :creator_id, inverse_of: :creator, dependent: :destroy
-  has_many :invites, through: :events
+  has_many :invites
 
   # jointable for guests
   has_many :event_guests, inverse_of: :user, dependent: :destroy
@@ -56,6 +56,16 @@ class User < ApplicationRecord
     ordered_ids = image_order.map(&:to_i)
     sorted = photos.sort_by { |p| ordered_ids.index(p.id) || photos.size }
     sorted.compact
+  end
+
+  # Einladungen empfangen
+  def received_invites
+    invites.includes(:event)
+  end
+
+  # Einladungen versendet (als Event-Ersteller)
+  def sent_invites
+    Invite.where(event_id: created_events.pluck(:id))
   end
 
   # validations

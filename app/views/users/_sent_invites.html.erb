@@ -1,0 +1,16 @@
+<h3 class="text-lg font-bold mt-8 mb-4">Einladungen & Status</h3>
+<ul>
+  <% @invites.each do |invite| %>
+    <li>
+      <%= invite.event.title %> – von <%= invite.event.creator.name %>:
+      <% case invite.answer
+          when "pending" %>
+        <span class="text-yellow-500">Offen</span>
+      <% when "accepted" %>
+        <span class="text-green-600">Angenommen</span>
+      <% when "declined" %>
+        <span class="text-red-600">Abgelehnt</span>
+      <% end %>
+    </li>
+  <% end %>
+</ul>

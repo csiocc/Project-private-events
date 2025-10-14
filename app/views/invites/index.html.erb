@@ -1,15 +1,36 @@
+<%= render "shared/profil_header" %>
+<h2 class="text-2xl font-bold mb-6">Deine Event-Einladungen</h2>
 
-<% content_for :title, "Invites" %>
-
-<h1>Invites</h1>
-
-<div id="invites">
-  <% @invites.each do |invite| %>
-    <%= render invite %>
-    <p>
-      <%= link_to "Show this invite", invite %>
-    </p>
-  <% end %>
-</div>
-
-<%= link_to "New invite", new_invite_path %>
+<% if @invites.any? %>
+  <ul class="space-y-6">
+    <% @invites.each do |invite| %>
+      <li class="p-4 bg-white rounded-xl shadow-md flex items-center justify-between">
+        <div>
+          <strong><%= invite.title %></strong>
+          <br>
+          <span class="text-gray-600">
+            Event: <%= link_to invite.event.title, event_path(invite.event) %>
+            <br>
+            Status:
+            <% case invite.answer
+                when "pending" %>
+              <span class="text-yellow-500">Offen</span>
+            <% when "accepted" %>
+              <span class="text-green-600">Angenommen</span>
+            <% when "declined" %>
+              <span class="text-red-600">Abgelehnt</span>
+            <% end %>
+          </span>
+        </div>
+        <% if invite.pending? %>
+          <div class="flex gap-2">
+            <%= button_to "Annehmen", accept_invite_path(invite), method: :post, class: "bg-green-500 px-3 py-2 text-white rounded-lg" %>
+            <%= button_to "Ablehnen", decline_invite_path(invite), method: :post, class: "bg-red-500 px-3 py-2 text-white rounded-lg" %>
+          </div>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <div class="text-gray-400 text-center">Du hast keine Einladungen.</div>
+<% end %>

@@ -27,6 +27,7 @@ end
 
   # GET /events/1 or /events/1.json
   def show
+    @event = Event.find(params[:id])
   end
 
   # GET /events/new
@@ -43,7 +44,20 @@ end
     @event = current_user.created_events.build(event_params)
 
     if @event.save
-      redirect_to @event, notice: "Event erfolgreich erstellt!"
+      # Einladungen erzeugen, wenn Invite-User-IDs mitkommen
+      if params[:event][:invite_user_ids]
+        params[:event][:invite_user_ids].each do |uid|
+          Invite.create!(
+            event: @event,
+            user_id: uid,
+            answer: 0, # offen
+            title: "Einladung zu #{@event.title}",
+            body: "Du wurdest zu diesem Event eingeladen."
+          )
+        end
+      end
+
+      redirect_to @event, notice: "Event und Einladungen erfolgreich erstellt!"
     else
       render :new, status: :unprocessable_entity
     end

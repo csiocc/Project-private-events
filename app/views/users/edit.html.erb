@@ -2,6 +2,7 @@
 
   <h1>Editing user</h1>
   <%= render "form", user: @user %>
+  <%= render partial: "invites_status", locals: { invites: @invites } %>
 
   <br>
 

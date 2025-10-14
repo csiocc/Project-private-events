@@ -14,6 +14,7 @@ class UsersController < ApplicationController
       return
     end
     @user = User.find(params[:id])
+    @invites = @user.invites.includes(:event)
   end
 
   # GET /users/new
@@ -72,11 +73,14 @@ class UsersController < ApplicationController
     end
   end
 
-  def attach_photo
-    @user = current_user
-    @user.photos.attach(params[:signed_id])
-    head :ok
+def attach_photo
+  @user = current_user
+  @user.photos.attach(params[:signed_id])
+  @user.photos.last(params[:signed_id].size).each do |photo|
+  photo.variant(resize_to_limit: [400, 400]).processed
+  head :ok
   end
+end
 
   # DELETE /users/1 or /users/1.json
   def destroy
@@ -90,10 +94,20 @@ class UsersController < ApplicationController
 
   def dating_profile_edit; end
 
-def owned_posts
-  @user = User.find(params[:id])
-  @posts = @user.posts.order(created_at: :desc)
-end
+  def owned_posts
+    @user = User.find(params[:id])
+    @posts = @user.posts.order(created_at: :desc)
+  end
+  
+  def search
+    term = params[:q].to_s.downcase
+    users = if term.blank?
+      User.all.limit(30)
+    else
+      User.where("LOWER(name) LIKE ? OR LOWER(email) LIKE ?", "%#{term}%", "%#{term}%").limit(30)
+    end
+    render json: users.select(:id, :name, :email)
+  end
 
   # social news feed follow/unfollow methods
   

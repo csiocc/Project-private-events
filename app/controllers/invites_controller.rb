@@ -1,70 +1,31 @@
 class InvitesController < ApplicationController
-  before_action :set_invite, only: %i[ show edit update destroy ]
+    before_action :authenticate_user!
+  before_action :set_invite, only: [:accept, :decline, :show]
 
-  # GET /invites or /invites.json
+  # Zeigt alle Einladungen für den aktuellen User
   def index
-    @invites = Invite.all
+    @invites = current_user.invites.includes(:event).order(created_at: :desc)
   end
 
-  # GET /invites/1 or /invites/1.json
+  # Zeigt Details zu einer Einladung
   def show
   end
 
-  # GET /invites/new
-  def new
-    @invite = Invite.new
+  # Einladung annehmen
+  def accept
+    @invite.accepted!
+    redirect_to invites_path, notice: "Du hast die Einladung angenommen."
   end
 
-  # GET /invites/1/edit
-  def edit
-  end
-
-  # POST /invites or /invites.json
-  def create
-    @invite = Invite.new(invite_params)
-
-    respond_to do |format|
-      if @invite.save
-        format.html { redirect_to @invite, notice: "Invite was successfully created." }
-        format.json { render :show, status: :created, location: @invite }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @invite.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # PATCH/PUT /invites/1 or /invites/1.json
-  def update
-    respond_to do |format|
-      if @invite.update(invite_params)
-        format.html { redirect_to @invite, notice: "Invite was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @invite }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @invite.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # DELETE /invites/1 or /invites/1.json
-  def destroy
-    @invite.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to invites_path, notice: "Invite was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
-    end
+  # Einladung ablehnen
+  def decline
+    @invite.declined!
+    redirect_to invites_path, alert: "Du hast die Einladung abgelehnt."
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_invite
-      @invite = Invite.find(params.expect(:id))
-    end
 
-    # Only allow a list of trusted parameters through.
-    def invite_params
-      params.expect(invite: [ :title, :body, :answer ])
-    end
+  def set_invite
+    @invite = current_user.invites.find(params[:id])
+  end
 end
