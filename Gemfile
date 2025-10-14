@@ -85,3 +85,5 @@ gem "open-uri", "~> 0.5.0"
 gem "faker", "~> 3.5"
 
 gem "kaminari", "~> 1.2"
+
+gem "jsbundling-rails", "~> 1.3"
