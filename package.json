@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "esbuild": "^0.25.10",
     "flowbite": "^3.1.2",
     "tailwindcss": "^4.1.14"
   },
