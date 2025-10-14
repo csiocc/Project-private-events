@@ -1,6 +1,6 @@
 <div class="w-screen h-auto bg-white p-4 shadow-md border-solid border-1"> 
- | <%= link_to 'Dating Profil', users_path, class: "text-gray-800 hover:text-gray-400" %> |
+ | <%= link_to 'Dating Profil', dating_profile_edit_path, class: "text-gray-800 hover:text-gray-400" %> |
   <%= link_to 'Events', events_path, class: "text-gray-800 hover:text-gray-400" %> |
-  <%= link_to 'Posts', events_path, class: "text-gray-800 hover:text-gray-400" %> |
+  <%= link_to 'Posts', owned_posts_user_path(current_user), class: "text-gray-800 hover:text-gray-400"%> |
   <%= link_to 'Profil Infos bearbeiten', edit_user_registration_path, class: "font-bold text-gray-800 hover:text-gray-400" %> |
 </div>

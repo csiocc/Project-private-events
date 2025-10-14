@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_13_124458) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_13_154829) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -76,6 +76,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_13_124458) do
     t.index ["creator_id"], name: "index_events_on_creator_id"
   end
 
+  create_table "follows", force: :cascade do |t|
+    t.integer "follower_id", null: false
+    t.integer "followed_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["followed_id"], name: "index_follows_on_followed_id"
+    t.index ["follower_id", "followed_id"], name: "index_follows_on_follower_id_and_followed_id", unique: true
+  end
+
   create_table "invites", force: :cascade do |t|
     t.string "title"
     t.text "body"
@@ -86,6 +95,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_13_124458) do
     t.bigint "user_id", null: false
     t.index ["event_id"], name: "index_invites_on_event_id"
     t.index ["user_id"], name: "index_invites_on_user_id"
+  end
+
+  create_table "likes", force: :cascade do |t|
+    t.bigint "liker_id", null: false
+    t.bigint "liked_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["liked_id"], name: "index_likes_on_liked_id"
+    t.index ["liker_id", "liked_id"], name: "index_likes_on_liker_id_and_liked_id", unique: true
+    t.index ["liker_id"], name: "index_likes_on_liker_id"
   end
 
   create_table "main_pages", force: :cascade do |t|
@@ -136,5 +155,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_13_124458) do
   add_foreign_key "events", "users", column: "creator_id"
   add_foreign_key "invites", "events"
   add_foreign_key "invites", "users"
+  add_foreign_key "likes", "users", column: "liked_id"
+  add_foreign_key "likes", "users", column: "liker_id"
   add_foreign_key "posts", "users"
 end

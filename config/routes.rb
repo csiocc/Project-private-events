@@ -7,18 +7,31 @@ Rails.application.routes.draw do
   resources :posts do
     resources :comments, only: [:create, :edit, :update, :destroy]
   end
+  get 'users/dating_profile_edit', to: 'users#dating_profile_edit', as: :dating_profile_edit
   resources :users do
     patch :update_photo_order, on: :member
     delete :remove_photo, on: :member
     post :attach_photo
+    post 'follow', on: :member
+    post 'unfollow', on: :member
+    get :owned_posts, on: :member
+    get :dating_profile, on: :member
+      collection do
+        get :dating_profiles
+      end
+    collection do
+      get :swiper
+    end
+    member do
+      post :like
+      post :dislike
+    end
   end
   resources :events
 
   root "main_pages#index"
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
+  
   get "up" => "rails/health#show", as: :rails_health_check
   get "/privacy", to: "main_pages#privacy_policy", as: :privacy
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)

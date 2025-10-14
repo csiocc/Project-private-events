@@ -78,8 +78,6 @@ class UsersController < ApplicationController
     head :ok
   end
 
-
-
   # DELETE /users/1 or /users/1.json
   def destroy
     @user.destroy!
@@ -88,6 +86,60 @@ class UsersController < ApplicationController
       format.html { redirect_to users_path, notice: "User was successfully destroyed.", status: :see_other }
       format.json { head :no_content }
     end
+  end
+
+  def dating_profile_edit; end
+
+def owned_posts
+  @user = User.find(params[:id])
+  @posts = @user.posts.order(created_at: :desc)
+end
+
+  # social news feed follow/unfollow methods
+  
+  def follow
+    @user = User.find(params[:id])
+    if current_user.follow(@user)
+      redirect_to users_path, notice: "You are now following #{@user.name}."
+    else
+      redirect_to users_path, alert: "Could not follow user."
+    end
+  end
+
+  def unfollow
+    @user = User.find(params[:id])
+    if current_user.unfollow(@user)
+      redirect_to users_path, notice: "You have unfollowed #{@user.name}."
+    else
+      redirect_to users_path, alert: "Could not unfollow user."
+    end
+  end
+
+  # dating 
+  def dating_profiles
+    @users = User.where.not(dating_bio: [nil, ""]).order(:name)
+  end
+
+  def dating_profile
+    @user = User.find(params[:id])
+  end
+
+  def swiper
+    # Zeigt ein zufälliges Profil, das der aktuelle User noch nicht geliked hat
+    excluded_ids = current_user.liked_users.pluck(:id) + [current_user.id]
+    @user = User.where.not(id: excluded_ids).order("RANDOM()").first
+  end
+
+  def like
+    @user = User.find(params[:id])
+    current_user.liked_users << @user unless current_user.liked_users.include?(@user)
+    redirect_to swiper_users_path
+  end
+
+  def dislike
+    @user = User.find(params[:id])
+    # Optional: create a Dislike model, oder ignoriere einfach
+    redirect_to swiper_users_path
   end
 
   private

@@ -1,0 +1,88 @@
+<%= render "shared/profil_header" %>
+<div class="flex flex-col items-center min-h-[95vh] bg-pink-50 py-12 px-4">
+  <% if @user.present? %>
+    <div data-controller="swiper" class="w-full max-w-xl bg-white rounded-2xl shadow-lg border border-pink-100 p-8 space-y-8">
+      <!-- Swipe-Galerie -->
+      <% if @user.photos.attached? && @user.photos.any? %>
+        <div data-action="click->swiper#onClick" class="relative w-full h-72 flex items-center justify-center overflow-hidden mb-6 cursor-pointer select-none">
+          <% @user.photos.each_with_index do |photo, idx| %>
+            <%= image_tag photo.variant(resize_to_limit: [400, 400]), 
+                class: "absolute inset-0 object-cover w-full h-full rounded-2xl transition-opacity duration-500 photo-target#{' hidden' unless idx == 0}", 
+                data: { swiper_target: "photo" } %>
+          <% end %>
+          <!-- Indikatoren -->
+          <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
+            <% @user.photos.each_with_index do |_, idx| %>
+              <span data-swiper-target="indicator" class="inline-block w-3 h-3 rounded-full bg-pink-400 opacity-40 indicator-target<%= ' opacity-100' if idx == 0 %>"></span>
+            <% end %>
+          </div>
+        </div>
+      <% else %>
+        <div class="flex items-center justify-center h-64 bg-pink-100 rounded-2xl mb-8">
+          <span class="text-5xl text-pink-300 font-extrabold"><%= @user.name.first.upcase %></span>
+        </div>
+      <% end %>
+
+      <!-- Profilinfos -->
+      <div class="text-center space-y-2 mb-4">
+        <h1 class="text-3xl font-bold text-pink-700"><%= @user.name %></h1>
+        <p class="text-gray-600 text-lg">
+          <% if @user.try(:age).present? %>
+            <%= @user.age %> Jahre
+          <% end %>
+          <% if @user.try(:location).present? %>
+            <span class="mx-1">·</span><%= @user.location %>
+          <% end %>
+        </p>
+      </div>
+      <!-- Profiltext -->
+      <% if @user.try(:profile_text).present? %>
+        <div class="mb-4">
+          <h3 class="text-pink-600 font-semibold mb-2 text-lg">Über mich</h3>
+          <p class="text-gray-800 whitespace-pre-line"><%= @user.profile_text %></p>
+        </div>
+      <% end %>
+      <!-- Gender & Präferenzen -->
+      <div class="flex flex-wrap justify-center gap-6 mb-4 text-sm">
+        <div class="bg-pink-100 px-4 py-2 rounded-xl text-pink-700 font-medium">
+          <i class="bx bx-user"></i>
+          <%= case @user.gender
+                when "male" then "Männlich"
+                when "female" then "Weiblich"
+                when "other" then "Divers"
+                else "?" end %>
+        </div>
+        <div class="bg-pink-100 px-4 py-2 rounded-xl text-pink-700 font-medium">
+          <i class="bx bx-heart"></i>
+          <%= case @user.show_gender_preferences
+                when "men" then "Sucht Männer"
+                when "women" then "Sucht Frauen"
+                when "both" then "Sucht beides"
+                else "?" end %>
+        </div>
+      </div>
+      <!-- Like/Dislike Buttons (Fallback für Desktop) -->
+      <div class="flex justify-center gap-6 mt-8 mb-2">
+        <%= form_with url: like_user_path(@user), method: :post, local: true, id: "like-form", style: "display:inline" do %>
+          <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-xl font-bold text-base shadow">
+            ❤️ Like
+          </button>
+        <% end %>
+        <%= form_with url: dislike_user_path(@user), method: :post, local: true, id: "dislike-form", style: "display:inline" do %>
+          <button type="submit" class="bg-gray-200 hover:bg-gray-400 text-gray-700 px-6 py-2 rounded-xl font-bold text-base shadow">
+            👎 Kein Like
+          </button>
+        <% end %>
+      </div>
+      <div class="text-center text-xs text-gray-400">
+        Swipe rechts für Like · Swipe links für kein Like · Bild rechts/links klicken für nächstes/vorheriges Bild
+      </div>
+    </div>
+  <% else %>
+    <div class="w-full max-w-xl bg-white rounded-2xl shadow-lg border border-pink-100 p-8 space-y-8 flex flex-col items-center">
+      <h2 class="text-2xl font-bold text-pink-700 mb-4">Keine weiteren Profile verfügbar!</h2>
+      <p class="text-gray-600 mb-6">Du hast alle verfügbaren Profile bereits bewertet.</p>
+      <%= link_to "Zurück zur Startseite", root_path, class: "bg-pink-600 hover:bg-pink-700 text-white px-6 py-2 rounded-xl font-medium" %>
+    </div>
+  <% end %>
+</div>
