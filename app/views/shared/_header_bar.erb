@@ -31,6 +31,7 @@
         <%= link_to 'Home', root_path, class: "font-bold text-gray-800 hover:text-gray-600" %>
         <%= link_to 'Posts', posts_path, class: "text-gray-800 hover:text-gray-600" %>
         <%= link_to 'Events', events_path, class: "text-gray-800 hover:text-gray-600" %>
+        <%= link_to 'Dating', swiper_users_path, class: "text-gray-800 hover:text-gray-600" %>
         <% if user_signed_in? %>
           <%= link_to "Users", users_path(@user, ), class: "text-gray-800 hover:text-gray-600" %>
           <%= link_to 'Profil', edit_user_registration_path%>
