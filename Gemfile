@@ -79,3 +79,9 @@ gem "flowbite", "~> 3.1"
 gem "geocoder", "~> 1.8"
 
 gem "image_processing", "~> 1.14"
+
+gem "open-uri", "~> 0.5.0"
+
+gem "faker", "~> 3.5"
+
+gem "kaminari", "~> 1.2"

@@ -9,7 +9,11 @@
         <%= link_to post.title, post_path(post) %>
       </h2>
       <p class="text-sm sm:text-base text-gray-500 mt-2">
+        <% if user_signed_in? %>
         by <%= post.user&.name.presence || "Unknown" %> · <%= time_ago_in_words(post.created_at) %> ago
+        <% else %>
+        by Unknown
+        <% end %>
       </p>
     </div>
 

@@ -6,8 +6,15 @@ export default class extends Controller {
   connect() {
     this.idx = 0
     this.showPhoto(this.idx)
+    this.mouseDownX = null
+    this.mouseSwiped = false
+
     this.element.addEventListener('touchstart', this.onTouchStart.bind(this))
     this.element.addEventListener('touchend', this.onTouchEnd.bind(this))
+
+    this.element.addEventListener('mousedown', this.onMouseDown.bind(this))
+    this.element.addEventListener('mouseup', this.onMouseUp.bind(this))
+    this.element.addEventListener('click', this.onClick.bind(this))
   }
 
   showPhoto(i) {
@@ -25,6 +32,12 @@ export default class extends Controller {
   }
 
   onClick(event) {
+    // Nur ausführen, wenn kein Mouse-Swipe stattgefunden hat!
+    if (this.mouseSwiped) {
+      // Reset für nächsten Klick
+      this.mouseSwiped = false
+      return
+    }
     const rect = event.currentTarget.getBoundingClientRect()
     const x = event.clientX - rect.left
     if (x > rect.width / 2) {
@@ -34,6 +47,7 @@ export default class extends Controller {
     }
   }
 
+  // Touch swipe
   onTouchStart(event) {
     this.touchStartX = event.changedTouches[0].clientX
   }
@@ -47,6 +61,23 @@ export default class extends Controller {
       }
     }
     this.touchStartX = null
+  }
+
+  // Mouse swipe (Desktop)
+  onMouseDown(event) {
+    this.mouseDownX = event.clientX
+  }
+  onMouseUp(event) {
+    const xEnd = event.clientX
+    if (this.mouseDownX && Math.abs(this.mouseDownX - xEnd) > 40) {
+      this.mouseSwiped = true
+      if (xEnd > this.mouseDownX) {
+        this.like()
+      } else {
+        this.dislike()
+      }
+    }
+    this.mouseDownX = null
   }
 
   like() {

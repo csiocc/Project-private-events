@@ -1,9 +1,9 @@
 <% content_for :title, "News feeds" %>
 
-<div class="w-full">
-  <div class="relative flex items-center">
-    <h1 class="absolute left-1/2 -translate-x-1/2 font-bold text-4xl">News feed</h1>
-    <%= link_to "New news feed", new_news_feed_path, class: "justify-self-end rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white block font-medium" %>
+<div class="w-full h-auto bg-gray-200">
+  <div class="relative flex items-center m-5">
+    <h1 class="font-bold text-4xl mx-auto">News feed</h1>
+   
   </div>
 
   <div id="news_feeds" class="min-w-full divide-y divide-gray-200 space-y-5">
@@ -11,11 +11,6 @@
       <% @news_feeds.each do |news_feed| %>
         <div class="flex flex-col sm:flex-row justify-between items-center pb-5 sm:pb-0">
           <%= render news_feed %>
-          <div class="w-full sm:w-auto flex flex-col sm:flex-row space-x-2 space-y-2">
-            <%= link_to "Show", news_feed, class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-            <%= link_to "Edit", edit_news_feed_path(news_feed), class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-            <%= button_to "Destroy", news_feed, method: :delete, class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 text-white bg-red-600 hover:bg-red-500 font-medium cursor-pointer", data: { turbo_confirm: "Are you sure?" } %>
-          </div>
         </div>
       <% end %>
     <% else %>

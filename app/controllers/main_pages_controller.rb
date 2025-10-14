@@ -1,11 +1,10 @@
 class MainPagesController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_main_page, only: %i[ show edit update destroy ]
 
   # GET /main_pages or /main_pages.json
   def index
-    @main_pages = MainPage.all
-    @posts = Post.all
-    @news_feeds = NewsFeed.all
+    @news_feeds = Post.where(user_id: current_user.following.pluck(:id)).order(created_at: :desc)
   end
 
   def privacy_policy; end

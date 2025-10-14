@@ -3,7 +3,7 @@ class NewsFeedsController < ApplicationController
 
   # GET /news_feeds or /news_feeds.json
   def index
-    @news_feeds = NewsFeed.all
+    @news_feeds = Post.where(user_id: current_user.following.pluck(:id)).order(created_at: :desc)
   end
 
   # GET /news_feeds/1 or /news_feeds/1.json

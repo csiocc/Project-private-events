@@ -1,0 +1,4 @@
+<%= turbo_stream.append "posts", partial: "posts/post", collection: @posts %>
+<% if @posts.next_page %>
+  <%= turbo_stream.append "posts", partial: "posts/infinite_scroll_trigger", locals: { next_page: @posts.next_page } %>
+<% end %>

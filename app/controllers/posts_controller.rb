@@ -4,12 +4,16 @@ class PostsController < ApplicationController
 
   # GET /posts or /posts.json
   def index
-    @posts = Post.includes(:user, :comments).order(updated_at: :desc)
+    @posts = Post.includes(:user, :comments).order(updated_at: :desc).page(params[:page]).per(5)
+  
+    respond_to do |format|
+      format.html # normale Seite
+      format.turbo_stream # infinite scroll
+    end
   end
-
   # GET /posts/1 or /posts/1.json
   def show
-    @post = Post.includes(:user, comments: :user).find(params[:id])
+    @post = Post.includes(:user, comments: :user).find(params[:id]).page(params[:page]).per(5)
   end
 
   # GET /posts/new
