@@ -74,14 +74,13 @@ class UsersController < ApplicationController
     end
   end
 
-def attach_photo
-  @user = current_user
-  @user.photos.attach(params[:signed_id])
-  @user.photos.last(params[:signed_id].size).each do |photo|
-  photo.variant(resize_to_limit: [400, 400]).processed
-  head :ok
+  def attach_photo
+    @user = current_user
+    signed_ids = Array(params[:signed_id])
+    @user.photos.attach(signed_ids)
+    head :ok
+    Rails.logger.info "Attach: #{params[:signed_id]}"
   end
-end
 
   # DELETE /users/1 or /users/1.json
   def destroy

@@ -1,5 +1,6 @@
 // app/javascript/application.js
 import "@hotwired/turbo-rails"
+import { DirectUpload } from "@rails/activestorage"
 import * as ActiveStorage from "@rails/activestorage"
 ActiveStorage.start()
 
