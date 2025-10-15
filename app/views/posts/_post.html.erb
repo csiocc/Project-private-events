@@ -1,61 +1,61 @@
 <article id="<%= dom_id(post) %>"
-         class="w-full max-w-5xl mx-auto bg-white rounded-2xl shadow-md border border-gray-100 p-8 mb-10 transition-all duration-300 hover:shadow-lg"
-         data-controller="collapse">
+  class="w-full max-w-3xl mx-auto bg-white/80 backdrop-blur-md shadow-lg border border-gray-200 rounded-xl overflow-hidden mb-10 transition-all hover:shadow-xl group"
+  data-controller="collapse">
 
-  <!-- Header -->
-  <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
+  <!-- Header: User Info & Meta -->
+  <div class="flex items-center gap-4 px-6 pt-6 pb-2">
     <div class="flex-1">
-      <h2 class="text-2xl sm:text-3xl font-semibold text-blue-700 hover:underline break-words">
+      <h2 class="text-xl sm:text-2xl font-bold text-gray-800 hover:text-blue-700 hover:underline transition">
         <%= link_to post.title, post_path(post) %>
       </h2>
-      <p class="text-sm sm:text-base text-gray-500 mt-2">
-        <% if user_signed_in? %>
-        by <%= post.user&.name.presence || "Unknown" %> · <%= time_ago_in_words(post.created_at) %> ago
-        <% else %>
-        by Unknown
-        <% end %>
-      </p>
+      <div class="text-xs text-gray-500 flex items-center gap-2 mt-1">
+        <span>by <%= post.user&.name.presence || "Unknown" %></span>
+        <span>·</span>
+        <span><%= time_ago_in_words(post.created_at) %> ago</span>
+      </div>
     </div>
-
     <% if user_signed_in? && post.user == current_user %>
-      <div class="flex flex-row space-x-3 shrink-0">
-        <%= link_to "Edit", edit_post_path(post), class: "text-sm sm:text-base text-blue-600 hover:underline" %>
-        <%= link_to "Delete", post, data: { turbo_method: :delete, turbo_confirm: "Sicher löschen?" }, class: "text-sm sm:text-base text-red-600 hover:underline" %>
+      <div class="flex flex-col space-y-1 items-end">
+        <%= link_to "Edit", edit_post_path(post), class: "text-xs text-blue-500 hover:text-blue-700 font-medium" %>
+        <%= link_to "Delete", post, data: { turbo_method: :delete, turbo_confirm: "Sicher löschen?" }, class: "text-xs text-red-500 hover:text-red-700 font-medium" %>
       </div>
     <% end %>
   </div>
 
-  <!-- Body -->
-  <div class="mt-4 text-gray-700 text-base sm:text-lg leading-relaxed line-clamp-4">
-    <%= simple_format(truncate(post.body, length: 400)) %>
+  <!-- Body: Content Preview -->
+  <div class="px-6 pb-3 pt-2">
+    <div class="text-base sm:text-lg text-gray-700 leading-relaxed line-clamp-5">
+      <%= simple_format(truncate(post.body, length: 400)) %>
+    </div>
   </div>
 
-  <!-- Toggle Button -->
-  <div class="mt-5">
+  <!-- Interactions: Comments, Likes, Share -->
+  <div class="px-6 pb-4 flex items-center gap-8 border-t border-gray-100">
     <button type="button"
-            class="flex items-center space-x-1 text-blue-600 hover:text-blue-800 transition"
-            data-action="collapse#toggle"
-            aria-expanded="false"
-            aria-controls="comments_<%= post.id %>">
-      <span data-collapse-target="label" class="font-medium">
-        Comments (<%= post.comments.count %>)
-      </span>
-      <svg data-collapse-target="chevron"
-           class="w-4 h-4 transition-transform duration-200"
-           viewBox="0 0 20 20"
-           fill="currentColor"
-           aria-hidden="true">
-        <path fill-rule="evenodd"
-              d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 011.08 1.04l-4.25 4.25a.75.75 0 01-1.06 0L5.21 8.27a.75.75 0 01.02-1.06z"/>
-      </svg>
+      class="flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium transition"
+      data-action="collapse#toggle"
+      aria-expanded="false"
+      aria-controls="comments_<%= post.id %>">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 8h2a2 2 0 012 2v8a2 2 0 01-2 2H7a2 2 0 01-2-2V10a2 2 0 012-2h2"></path></svg>
+      <span>Comments (<%= post.comments.count %>)</span>
     </button>
+    <%= button_to like_post_path(post), {
+          method: :post,
+          remote: true,
+          class: "flex items-center gap-1 text-pink-600 hover:text-pink-800 text-sm font-medium bg-transparent border-none p-0"
+        } do %>
+      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="..."/></svg>
+      <%= turbo_frame_tag "post_#{post.id}_likes_counter" do %>
+        <span><%= pluralize(post.post_likes.count, 'Like', 'Likes') %></span>
+      <% end %>
+    <% end %>
   </div>
 
   <!-- Collapsible Comments -->
   <div id="comments_<%= post.id %>"
-      class="hidden mt-5 space-y-5"
-      data-collapse-target="panel"
-      aria-hidden="true">
+    class="hidden px-6 pb-6 space-y-5"
+    data-collapse-target="panel"
+    aria-hidden="true">
     <% roots = post.comments.where(parent_id: nil).order(:created_at) %>
     <% if roots.any? %>
       <% roots.each do |comment| %>
@@ -63,8 +63,7 @@
       <% end %>
       <% if post.comments.count > 5 %>
         <div class="text-center mt-4">
-          <%= link_to "View full discussion →", post_path(post),
-              class: "text-blue-600 hover:underline text-sm font-medium" %>
+          <%= link_to "View full discussion →", post_path(post), class: "text-blue-600 hover:underline text-sm font-medium" %>
         </div>
       <% end %>
     <% else %>

@@ -1,0 +1,5 @@
+<turbo-stream target="post_<%= @post.id %>_likes_counter" action="replace">
+  <template>
+    <span><%= pluralize(@post.post_likes.count, 'Like', 'Likes') %></span>
+  </template>
+</turbo-stream>

@@ -16,6 +16,10 @@ Rails.application.routes.draw do
 
   resources :posts do
     resources :comments, only: [:create, :edit, :update, :destroy]
+    member do
+      post 'like', to: 'post_likes#create', as: :like
+      post 'unlike', to: 'post_likes#destroy', as: :unlike
+    end
   end
 
   get "users/:id/dating_profile", to: "users#dating_profile", as: "dating_profile"
