@@ -7,16 +7,20 @@
   </div>
 
   <div id="news_feeds" class="min-w-full divide-y divide-gray-200 space-y-5">
-    <% if @news_feeds %>
-      <%if @news_feeds.any?%>
-        <% @news_feeds.each do |news_feed| %>
-          <div class="flex flex-col sm:flex-row justify-between items-center pb-5 sm:pb-0">
-            <%= render news_feed %>
-          </div>
+    <% if user_signed_in?%>
+      <% if @news_feeds %>
+        <%if @news_feeds.any?%>
+          <% @news_feeds.each do |news_feed| %>
+            <div class="flex flex-col sm:flex-row justify-between items-center pb-5 sm:pb-0">
+              <%= render news_feed %>
+            </div>
+          <% end %>
+        <% else %>
+          <p class="text-center my-10">No news feeds found. Follow some Users for News!</p>
         <% end %>
-      <% else %>
-        <p class="text-center my-10">No news feeds found. Follow some Users for News!</p>
       <% end %>
+    <% else %>
+      <p class="text-center my-10">Please sign in to see the news feeds.</p>
     <% end %>
   </div>
 </div>
