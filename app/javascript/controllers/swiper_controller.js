@@ -1,89 +1,90 @@
+// app/javascript/controllers/swiper_controller.js
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ["photo", "indicator"]
+  static values = {
+    swipeThreshold: { type: Number, default: 40 },   // px
+    clickBlockMs:   { type: Number, default: 350 }   // nach Swipe Klicks ignorieren
+  }
 
   connect() {
-    this.idx = 0
-    this.showPhoto(this.idx)
-    this.mouseDownX = null
-    this.mouseSwiped = false
+    this.index = 0
+    this._pointerDownX = null
+    this._lastSwipeAt = 0
 
-    this.element.addEventListener('touchstart', this.onTouchStart.bind(this))
-    this.element.addEventListener('touchend', this.onTouchEnd.bind(this))
+    this.show(this.index)
 
-    this.element.addEventListener('mousedown', this.onMouseDown.bind(this))
-    this.element.addEventListener('mouseup', this.onMouseUp.bind(this))
-    this.element.addEventListener('click', this.onClick.bind(this))
+    // Ein Handler für Maus + Touch:
+    this._onPointerDown = this.onPointerDown.bind(this)
+    this._onPointerUp   = this.onPointerUp.bind(this)
+    this._onClick       = this.onClick.bind(this)
+
+    this.element.addEventListener("pointerdown", this._onPointerDown, { passive: true })
+    this.element.addEventListener("pointerup",   this._onPointerUp,   { passive: true })
+    this.element.addEventListener("click",       this._onClick)
   }
 
-  showPhoto(i) {
-    this.photoTargets.forEach((p, j) => p.classList.toggle('hidden', j !== i))
-    this.indicatorTargets.forEach((ind, j) => ind.classList.toggle('opacity-100', j === i))
-    this.indicatorTargets.forEach((ind, j) => ind.classList.toggle('opacity-40', j !== i))
-    this.idx = i
+  disconnect() {
+    this.element.removeEventListener("pointerdown", this._onPointerDown)
+    this.element.removeEventListener("pointerup",   this._onPointerUp)
+    this.element.removeEventListener("click",       this._onClick)
   }
 
-  nextPhoto() {
-    this.showPhoto((this.idx + 1) % this.photoTargets.length)
-  }
-  prevPhoto() {
-    this.showPhoto((this.idx - 1 + this.photoTargets.length) % this.photoTargets.length)
+  // --- Navigation ---
+  next() { this.show((this.index + 1) % this.photoTargets.length) }
+  prev() { this.show((this.index - 1 + this.photoTargets.length) % this.photoTargets.length) }
+
+  show(i) {
+    if (!this.photoTargets.length) return
+    this.index = i
+    this.photoTargets.forEach((el, idx) => el.classList.toggle("hidden", idx !== i))
+    this.indicatorTargets.forEach((dot, idx) => {
+      dot.classList.toggle("opacity-100", idx === i)
+      dot.classList.toggle("opacity-40",  idx !== i)
+    })
   }
 
-  onClick(event) {
-    // Nur ausführen, wenn kein Mouse-Swipe stattgefunden hat!
-    if (this.mouseSwiped) {
-      // Reset für nächsten Klick
-      this.mouseSwiped = false
-      return
+  // --- Pointer/Swipe ---
+  onPointerDown(e) {
+    // nur Primary-Button beachten
+    if (e.button !== 0) return
+    this._pointerDownX = e.clientX
+  }
+
+  onPointerUp(e) {
+    if (this._pointerDownX == null) return
+    const dx = e.clientX - this._pointerDownX
+    this._pointerDownX = null
+
+    if (Math.abs(dx) >= this.swipeThresholdValue) {
+      // Swipe erkannt → Like/Dislike auslösen + Clicks kurz blocken
+      this._lastSwipeAt = Date.now()
+      if (dx > 0) this.like()
+      else        this.dislike()
     }
-    const rect = event.currentTarget.getBoundingClientRect()
-    const x = event.clientX - rect.left
-    if (x > rect.width / 2) {
-      this.nextPhoto()
-    } else {
-      this.prevPhoto()
-    }
   }
 
-  // Touch swipe
-  onTouchStart(event) {
-    this.touchStartX = event.changedTouches[0].clientX
-  }
-  onTouchEnd(event) {
-    const xEnd = event.changedTouches[0].clientX
-    if (this.touchStartX && Math.abs(this.touchStartX - xEnd) > 40) {
-      if (xEnd > this.touchStartX) {
-        this.like()
-      } else {
-        this.dislike()
-      }
-    }
-    this.touchStartX = null
+  // --- Click (nur wenn kein frischer Swipe) ---
+  onClick(e) {
+    // „Ghost Click“ nach Swipe ignorieren
+    if (Date.now() - this._lastSwipeAt < this.clickBlockMsValue) return
+
+    const rect = e.currentTarget.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    x > rect.width / 2 ? this.next() : this.prev()
   }
 
-  // Mouse swipe (Desktop)
-  onMouseDown(event) {
-    this.mouseDownX = event.clientX
-  }
-  onMouseUp(event) {
-    const xEnd = event.clientX
-    if (this.mouseDownX && Math.abs(this.mouseDownX - xEnd) > 40) {
-      this.mouseSwiped = true
-      if (xEnd > this.mouseDownX) {
-        this.like()
-      } else {
-        this.dislike()
-      }
-    }
-    this.mouseDownX = null
-  }
-
+  // --- Aktionen ---
   like() {
-    this.element.querySelector("#like-form").submit()
+    const form = this.element.querySelector("#like-form")
+    if (form) form.submit()
+    else this.next() // Fallback, falls Form fehlt
   }
+
   dislike() {
-    this.element.querySelector("#dislike-form").submit()
+    const form = this.element.querySelector("#dislike-form")
+    if (form) form.submit()
+    else this.next() // Fallback
   }
 }
