@@ -68,23 +68,15 @@ end
 
 
 gem "tailwindcss-ruby", "~> 4.1"
-
 gem "tailwindcss-rails", "~> 4.3"
-
 gem "heroicon-rails", "~> 0.2.9"
-
 gem "devise", "~> 4.9"
-
 gem "flowbite", "~> 3.1"
-
 gem "geocoder", "~> 1.8"
-
 gem "image_processing", "~> 1.14"
-
 gem "open-uri", "~> 0.5.0"
-
 gem "faker", "~> 3.5"
-
 gem "kaminari", "~> 1.2"
-
 gem "jsbundling-rails", "~> 1.3"
+gem "aws-sdk-s3", require: false
+gem "solid_cache"
