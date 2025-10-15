@@ -20,8 +20,8 @@ production:
   primary:
     <<: *default
     url: <%= ENV["DATABASE_URL"] %>
-    encoding: unicode
-    pool: <%= ENV.fetch("RAILS_MAX_THREADS", 5) %>
+    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   cache:
     <<: *default
-    database: <%= ENV["CACHE_DATABASE_URL"] || ENV["DATABASE_URL"] %>
+    url: <%= ENV["CACHE_DATABASE_URL"] || ENV["DATABASE_URL"] %>
+    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
