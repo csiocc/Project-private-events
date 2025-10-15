@@ -5,7 +5,7 @@ export default class extends Controller {
   static targets = ["panel", "chevron"]
 
   connect() {
-    console.log("✅ Collapse controller verbunden!")
+    console.log("Collapse controller verbunden!")
     this.panelTarget.style.transition = "all 0.3s ease-in-out"
     this.panelTarget.style.overflow = "hidden"
     this.panelTarget.style.maxHeight = "0px"

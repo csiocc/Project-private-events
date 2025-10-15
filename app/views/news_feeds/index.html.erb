@@ -7,7 +7,7 @@
   </div>
 
   <div id="news_feeds" class="min-w-full divide-y divide-gray-200 space-y-5">
-    <% if @news_feeds.any? %>
+    <% if @news_feeds %>
       <% @news_feeds.each do |news_feed| %>
         <div class="flex flex-col sm:flex-row justify-between items-center pb-5 sm:pb-0">
           <%= render news_feed %>

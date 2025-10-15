@@ -63,12 +63,12 @@
       </div>
       <!-- Like/Dislike Buttons (Fallback für Desktop) -->
       <div class="flex justify-center gap-6 mt-8 mb-2">
-        <%= form_with url: like_user_path(@user), method: :post, local: true, id: "like-form", style: "display:inline" do %>
+        <%= form_with url: like_user_path(@user), method: :post, id: "like-form", style: "display:inline" do %>
           <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-xl font-bold text-base shadow">
             ❤️ Like
           </button>
         <% end %>
-        <%= form_with url: dislike_user_path(@user), method: :post, local: true, id: "dislike-form", style: "display:inline" do %>
+        <%= form_with url: dislike_user_path(@user), method: :post, id: "dislike-form", style: "display:inline" do %>
           <button type="submit" class="bg-gray-200 hover:bg-gray-400 text-gray-700 px-6 py-2 rounded-xl font-bold text-base shadow">
             👎 Kein Like
           </button>
