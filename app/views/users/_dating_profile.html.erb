@@ -6,7 +6,7 @@
         <div data-action="click->swiper#onClick" class="relative w-full h-72 flex items-center justify-center overflow-hidden mb-6 cursor-pointer select-none">
           <% @user.photos.each_with_index do |photo, idx| %>
             <%= image_tag photo.variant(resize_to_limit: [400, 400]),
-                class: "absolute inset-0 object-cover w-full h-full rounded-2xl transition-opacity duration-500 photo-target#{' hidden' unless idx == 0}",
+                class: "absolute inset-0 object-cover w-full h-full rounded-2xl transition-opacity duration-500 photo-target pointer-events-none#{' hidden' unless idx == 0}",
                 data: { swiper_target: "photo" } %>
           <% end %>
           <!-- Indikatoren -->
