@@ -3,6 +3,8 @@
   <%= link_to 'Events', events_path, class: "text-gray-800 hover:text-gray-400" %> |
   <%= link_to 'Posts', owned_posts_user_path(current_user), class: "text-gray-800 hover:text-gray-400"%> |
   <%= render "shared/invites_link" %> |
+  <%if current_user.userrole == "admin" %>
   <%= render "shared/logger_link" %> |
+  <% end %>
   <%= link_to 'Profil bearbeiten', edit_user_registration_path, class: "font-bold text-gray-800 hover:text-gray-400" %> |
 </div>

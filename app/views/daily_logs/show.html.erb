@@ -1,13 +1,40 @@
-<h1 class="font-bold text-4xl">Showing daily log for <%= @log_date %></h1>
+<%= render "shared/profil_header" %>
 
-<% @logs.each do |log| %>
-  <div class="mb-4 p-4 rounded bg-gray-50">
-    <strong><%= log.source %></strong> <em><%= log.created_at.strftime("%H:%M") %></em><br>
-    <%= simple_format(log.content) %><br>
-    <%= button_to "Gelesen", mark_as_read_daily_log_path(@log), method: :post %>
-    <%= link_to "Edit", edit_daily_log_path(log), class: "text-blue-600" %> |
-    <%= link_to "Delete", daily_log_path(log), method: :delete, data: { confirm: "Are you sure?" }, class: "text-red-600" %>
+<h2 class="font-bold text-2xl mb-6 text-yellow-700">Ungelesene Logs für <%= @date %></h2>
+<%= button_to "Alle als gelesen markieren", mark_all_as_read_daily_logs_path, method: :post, class: "mb-6 px-4 py-2 rounded bg-green-600 text-white font-semibold shadow hover:bg-green-700 transition" %>
+
+<% if @unread_logs&.any? %>
+  <div class="space-y-4">
+    <% @unread_logs.each do |log| %>
+      <div class="p-4 rounded bg-yellow-50 border border-yellow-200 shadow">
+        <div class="flex justify-between items-center mb-2">
+          <strong class="text-yellow-800"><%= log.source %></strong>
+          <em class="text-xs text-yellow-700"><%= log.created_at.strftime("%H:%M") %></em>
+        </div>
+        <div class="mb-3 text-yellow-900"><%= simple_format(log.content) %></div>
+        <%= button_to "Gelesen", mark_as_read_daily_log_path(log), method: :post, class: "px-3 py-1 rounded bg-blue-600 text-white font-semibold shadow hover:bg-blue-700 transition" %>
+      </div>
+    <% end %>
   </div>
+<% else %>
+  <div class="mb-6 p-4 rounded bg-gray-50 text-gray-400 shadow">Keine ungelesenen Logs.</div>
 <% end %>
 
-<%= link_to "Back to daily logs", daily_logs_path, class: "... your classes ..." %>
+<h2 class="font-bold text-2xl mt-10 mb-4 text-gray-700">Gelesene Logs für <%= @date %></h2>
+<% if @read_logs&.any? %>
+  <div class="space-y-4">
+    <% @read_logs.each do |log| %>
+      <div class="p-4 rounded bg-gray-100 border border-gray-300 shadow">
+        <div class="flex justify-between items-center mb-2">
+          <strong class="text-gray-800">From: <%= log.source %></strong>
+          <em class="text-xs text-gray-600"><%= log.created_at.strftime("%H:%M") %></em>
+        </div>
+        <div class="mb-3 text-gray-900"><%= simple_format(log.content) %></div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <div class="mb-6 p-4 rounded bg-gray-50 text-gray-400 shadow">Keine gelesenen Logs.</div>
+<% end %>
+
+<%= link_to "Zurück", daily_logs_path, class: "mt-12 inline-block px-6 py-2 bg-gray-200 rounded shadow hover:bg-gray-300 font-semibold transition" %>

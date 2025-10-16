@@ -4,14 +4,20 @@ class DailyLogsController < ApplicationController
 
   # GET /daily_logs or /daily_logs.json
   def index
-    @dates = DailyLog.select(:log_date).distinct.order(log_date: :desc).pluck(:log_date)
-    @unread_logs = DailyLog.where.not(id: current_user.read_daily_logs)
-    @read_logs   = DailyLog.where(id: current_user.read_daily_logs)
+    all_dates = DailyLog.distinct.pluck(:log_date)
+    read_dates = current_user.read_daily_logs.distinct.pluck(:log_date)
+    @read_dates   = all_dates & read_dates      # Tage, für die der User Logs gelesen hat
+    @unread_dates = all_dates - read_dates      # Tage, für die der User noch nichts gelesen hat
   end
 
   def show
-    @log_date = params[:id]
-    @logs = DailyLog.where(log_date: @log_date).order(created_at: :asc)
+    @date = params[:id]
+    logs = DailyLog.where(log_date: @date)
+    @read_logs   = logs.where(id: current_user.read_daily_logs.where(log_date: @date))
+    @unread_logs = logs.where.not(id: current_user.read_daily_logs.where(log_date: @date))
+  end
+
+  def new
   end
 
   def edit
@@ -59,7 +65,7 @@ class DailyLogsController < ApplicationController
   def ensure_admin!
     unless current_user.userrole == "admin"
       Rails.logger.warn "Unbefugter Zugriff von Benutzer #{current_user.id} auf DailyLogsController userrole is: #{current_user.userrole}"
-      redirect_to root_path, alert: "Zugriff verweigert."
+      redirect_to root_path, notice: "Zugriff verweigert."
     end
   end
 

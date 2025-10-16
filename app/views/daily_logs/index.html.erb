@@ -1,31 +1,37 @@
-<h2 class="font-bold text-2xl mb-4">Ungelesene Logs</h2>
+<%= render "shared/profil_header" %>
 
-<%= button_to "Alle als gelesen markieren", mark_all_as_read_daily_logs_path, method: :post, class: "mb-4 px-3 py-2 rounded bg-green-600 text-black" %>
+<h2 class="font-bold text-2xl mb-6">Deine Log-Tage</h2>
 
-<% if @unread_logs.any? %>
-  <% @unread_logs.each do |log| %>
-    <div class="mb-2 p-2 bg-yellow-50 rounded">
-      <strong><%= log.source %></strong>
-      <em><%= log.created_at.strftime("%H:%M") %></em><br>
-      <%= simple_format(log.content) %><br>
-      <%= button_to "Gelesen", mark_as_read_daily_log_path(log), method: :post, class: "mt-1 px-2 py-1 rounded bg-blue-600 text-white" %>
-    </div>
-  <% end %>
-<% else %>
-  <div class="mb-4 p-2 text-gray-700">Keine ungelesenen Logs.</div>
-<% end %>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+  <div>
+    <h3 class="font-semibold text-xl mb-2 text-yellow-700">Ungelesene Log-Tage</h3>
+    <ul class="space-y-2">
+      <% @unread_dates.each do |date| %>
+        <li>
+          <%= link_to date, daily_log_path(date),
+              class: "block px-4 py-2 rounded bg-yellow-50 border border-yellow-200 text-yellow-800 hover:bg-yellow-200 hover:text-yellow-900 shadow transition" %>
+        </li>
+      <% end %>
+      <% if @unread_dates.empty? %>
+        <li class="text-gray-400 italic">Du hast alle Logs gelesen!</li>
+      <% end %>
+    </ul>
+  </div>
 
-<h2 class="font-bold text-2xl mt-6 mb-4">Gelesene Logs</h2>
-<% if @read_logs.any? %>
-  <% @read_logs.each do |log| %>
-    <div class="mb-2 p-2 bg-gray-100 rounded">
-      <strong><%= log.source %></strong>
-      <em><%= log.created_at.strftime("%H:%M") %></em><br>
-      <%= simple_format(log.content) %>
-    </div>
-  <% end %>
-<% else %>
-  <div class="mb-4 p-2 text-gray-700">Keine gelesenen Logs.</div>
-<% end %>
+  <div>
+    <h3 class="font-semibold text-xl mb-2 text-gray-700">Gelesene Log-Tage</h3>
+    <ul class="space-y-2">
+      <% @read_dates.each do |date| %>
+        <li>
+          <%= link_to date, daily_log_path(date),
+              class: "block px-4 py-2 rounded bg-gray-100 border border-gray-300 text-gray-700 hover:bg-gray-200 hover:text-gray-900 shadow transition" %>
+        </li>
+      <% end %>
+      <% if @read_dates.empty? %>
+        <li class="text-gray-400 italic">Noch keine gelesenen Tage.</li>
+      <% end %>
+    </ul>
+  </div>
+</div>
 
-<%= link_to "Zurück", root_path, class: "mt-8 inline-block px-4 py-2 bg-gray-200 rounded hover:bg-gray-300" %>
+<%= link_to "Zurück", root_path, class: "mt-10 inline-block px-5 py-2 bg-gray-200 rounded hover:bg-gray-300 font-semibold shadow" %>

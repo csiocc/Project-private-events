@@ -1,9 +1,9 @@
 <% unread_count = current_user.unread_daily_logs.count %>
-<%= link_to daily_logs_path, class: "relative text-gray-800 hover:text-gray-400 inline-block" do %>
-  Logger
-  <% if unread_count > 0 %>
-    <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-2 rounded-full">
-      <%= unread_count %>
-    </span>
-  <% end %>
+  <%= link_to daily_logs_path, class: "relative text-gray-800 hover:text-gray-400 inline-block" do %>
+    Logger
+    <% if unread_count > 0 %>
+      <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-2 rounded-full">
+        <%= unread_count %>
+      </span>
+    <% end %>
 <% end %>
