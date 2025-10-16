@@ -1,5 +1,6 @@
 <div data-controller="photo-upload"
      data-photo-upload-update-url-value="<%= update_photo_order_user_path(current_user) %>"
+     data-photo-upload-user-id-value="<%= current_user.id %>"
      class="border-2 border-dashed border-gray-300 rounded-2xl p-8 bg-gray-50 hover:bg-gray-100 transition text-center cursor-pointer">
 
   <p class="text-gray-500 mb-4">📸 Fotos hierher ziehen oder klicken zum Hochladen</p>
@@ -18,11 +19,13 @@
   <div data-photo-upload-target="list" class="flex flex-wrap justify-center gap-4 mt-6">
     <% current_user.ordered_photos.each do |photo| %>
     
-      <div class="relative w-40 h-40 rounded-xl overflow-hidden border border-gray-200 shadow-sm cursor-grab"
+      <div id="photo_<%= photo.id %>" class="relative w-40 h-40 rounded-xl overflow-hidden border border-gray-200 shadow-sm cursor-grab"
            data-photo-id="<%= photo.id %>">
         <%= image_tag photo.variant(resize_to_fill: [160, 160]),
                       class: "object-cover w-full h-full pointer-events-none" %>
         <button type="button"
+                data-action="click->photo-upload#removePhoto"
+                data-photo-id="<%= photo.id %>"
                 class="absolute top-2 right-2 z-10 bg-red-500 hover:bg-red-700 text-white text-lg font-bold
                        w-7 h-7 flex items-center justify-center rounded-full shadow-md transition-all duration-150">
           X

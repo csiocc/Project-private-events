@@ -1,6 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 import { DirectUpload } from "@rails/activestorage"
 import Sortable from "sortablejs/modular/sortable.core.esm.js"
+import { renderStreamMessage } from "@hotwired/turbo"
 
 export default class extends Controller {
   static targets = ["input", "list"]
@@ -67,49 +68,73 @@ export default class extends Controller {
     let finished = 0
 
     files.forEach((file) => {
-      // Sofort Vorschau
-      const reader = new FileReader()
-      reader.onload = (ev) => {
-        const imgWrap = document.createElement("div")
-        imgWrap.classList.add(
-          "relative", "w-40", "h-40", "rounded-xl", "overflow-hidden",
-          "border", "border-gray-200", "shadow-sm", "cursor-grab"
-        )
-
-        // Bild + Button einfügen
-        imgWrap.innerHTML = `
-          <img src="${ev.target.result}" class="object-cover w-full h-full pointer-events-none" />
-          <button type="button"
-                  class="absolute top-2 right-2 z-10 bg-red-500 hover:bg-red-700 text-white text-lg font-bold
-                       w-7 h-7 flex items-center justify-center rounded-full shadow-md transition-all duration-150">
-            X
-          </button>
-        `
-
-        this.listTarget.appendChild(imgWrap)
-      }
-
-      reader.readAsDataURL(file)
-
-      // ActiveStorage DirectUpload
       const upload = new DirectUpload(file, this.inputTarget.dataset.directUploadUrl)
       upload.create((error, blob) => {
         finished++
         if (error) {
           console.error("Upload error:", error)
         } else {
-          // Direkt an den Server schicken
-          fetch("/users/" + this.userId + "/attach_photo", {
+          fetch(`/users/${this.userIdValue}/attach_photo`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
+              "Accept": "application/json",
               "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content
             },
             body: JSON.stringify({ signed_id: blob.signed_id })
           })
+          .then(response => response.json())
+          .then(photo => {
+            // Vorschau mit Backend-ID!
+            this.appendPhotoPreview(photo)
+          })
         }
         if (finished === files.length) this.isUploading = false
       })
+    })
+  }
+
+  appendPhotoPreview(photo) {
+    const imgWrap = document.createElement("div")
+    imgWrap.id = `photo_${photo.id}`
+    imgWrap.setAttribute("data-photo-id", photo.id)
+    imgWrap.classList.add(
+      "relative", "w-40", "h-40", "rounded-xl", "overflow-hidden",
+      "border", "border-gray-200", "shadow-sm", "cursor-grab"
+    )
+    imgWrap.innerHTML = `
+      <img src="${photo.url}" class="object-cover w-full h-full pointer-events-none" />
+      <button type="button"
+              data-action="photo-upload#removePhoto"
+              data-photo-id="${photo.id}"
+              class="absolute top-2 right-2 z-10 bg-red-500 hover:bg-red-700 text-white text-lg font-bold
+                    w-7 h-7 flex items-center justify-center rounded-full shadow-md transition-all duration-150">
+        X
+      </button>
+    `
+    this.listTarget.appendChild(imgWrap)
+  }
+
+  removePhoto(event) {
+    event.stopPropagation()
+    event.preventDefault()
+    const photoEl = event.target.closest("[data-photo-id]")
+    if (!photoEl) return
+
+    const photoId = photoEl.dataset.photoId
+
+    fetch(`/users/${this.userIdValue}/remove_photo`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "text/vnd.turbo-stream.html",
+        "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content
+      },
+      body: JSON.stringify({ photo_id: photoId })
+    })
+    .then(response => response.text())
+    .then(html => {
+      renderStreamMessage(html)
     })
   }
 
@@ -136,35 +161,5 @@ export default class extends Controller {
       })
       .catch(error => console.error("Fehler beim Speichern der Reihenfolge:", error))
   }
-
-  removePhoto(event) {
-    event.stopPropagation()
-    const photoEl = event.target.closest("[data-photo-id]")
-    if (!photoEl) return
-
-    const photoId = photoEl.dataset.photoId
-    console.log("🗑️ Lösche Foto:", photoId)
-
-    // Sofort aus dem DOM entfernen
-    photoEl.remove()
-
-    // Anfrage an Server schicken, um das Bild auch dort zu löschen
-    console.log("Order:", order)
-    fetch(`/users/${this.userId}/remove_photo`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content
-      },
-      body: JSON.stringify({ photo_id: photoId })
-    })
-      .then(response => {
-        if (!response.ok) throw new Error("Server error beim Löschen")
-        console.log("Foto gelöscht")
-      })
-      .catch(error => console.error("Fehler beim Löschen:", error))
-  }
-
-
 
 }

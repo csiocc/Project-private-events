@@ -27,7 +27,7 @@
       <div class="p-4 rounded bg-gray-100 border border-gray-300 shadow">
         <div class="flex justify-between items-center mb-2">
           <strong class="text-gray-800">From: <%= log.source %></strong>
-          <em class="text-xs text-gray-600"><%= log.created_at.strftime("%H:%M") %></em>
+          <em class="text-xs text-gray-600"><%= log.created_at.in_time_zone("Europe/Berlin").strftime("%H:%M") %></em>
         </div>
         <div class="mb-3 text-gray-900"><%= simple_format(log.content) %></div>
       </div>

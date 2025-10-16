@@ -64,6 +64,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_16_084644) do
     t.index ["user_id"], name: "index_daily_log_reads_on_user_id"
   end
 
+  create_table "daily_loggers", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "daily_logs", force: :cascade do |t|
     t.date "log_date"
     t.text "content"

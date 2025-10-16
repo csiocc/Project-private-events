@@ -67,10 +67,14 @@ class UsersController < ApplicationController
 
   def remove_photo
     @user = current_user
-    photo = @user.photos.find_by_id(params[:photo_id])
+    photo = @user.photos.attachments.find_by_id(params[:photo_id])
     if photo.present?
       photo.purge # ActiveStorage entfernt die Datei
-      head :ok
+      @photo_id = photo.id
+      respond_to do |format|
+        format.turbo_stream
+        format.json { head :no_content }
+      end
     else
       render json: { error: "Photo not found" }, status: :not_found
     end
@@ -80,8 +84,13 @@ class UsersController < ApplicationController
     @user = current_user
     signed_ids = Array(params[:signed_id])
     @user.photos.attach(signed_ids)
-    head :ok
-    log_current_user_action("user #{user.id} with email #{user.email} uploaded a new photo.")
+    photo = @user.photos.last
+
+    render json: {
+      id: photo.id,
+      url: url_for(photo)
+    }
+    log_current_user_action("user #{@user.id} with email #{@user.email} uploaded a new photo.")
     Rails.logger.info "Attach: #{params[:signed_id]}"
   end
 

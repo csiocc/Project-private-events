@@ -1,0 +1,14 @@
+<turbo-stream action="append" target="photo-upload-list">
+  <div id="photo_<%= @photo.id %>"
+       class="relative w-40 h-40 rounded-xl overflow-hidden border border-gray-200 shadow-sm cursor-grab"
+       data-photo-id="<%= @photo.id %>">
+    <%= image_tag url_for(@photo), class: "object-cover w-full h-full pointer-events-none" %>
+    <button type="button"
+            data-action="photo-upload#removePhoto"
+            data-photo-id="<%= @photo.id %>"
+            class="absolute top-2 right-2 z-10 bg-red-500 hover:bg-red-700 text-white text-lg font-bold
+                   w-7 h-7 flex items-center justify-center rounded-full shadow-md transition-all duration-150">
+      X
+    </button>
+  </div>
+</turbo-stream>

@@ -17,7 +17,7 @@
       <div class="flex items-center justify-between">
         <div>
           <span class="font-medium text-gray-900"><%= username %></span>
-          <span class="text-gray-400 text-sm ml-2"><%= time_ago_in_words(comment.created_at) %> ago</span>
+          <span class="text-gray-400 text-sm ml-2"><%= time_ago_in_words((comment.created_at).in_time_zone("Europe/Berlin")) %> ago</span>
         </div>
 
         <% if user_signed_in? && comment.user == current_user %>
