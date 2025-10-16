@@ -1,0 +1,6 @@
+class AddUserroleToUsers < ActiveRecord::Migration[8.0]
+  def change
+    add_column :users, :userrole, :string, default: "user", null: false
+  end
+
+end
