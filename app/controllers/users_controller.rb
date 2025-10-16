@@ -10,6 +10,7 @@ class UsersController < ApplicationController
 
   # GET /users/1 or /users/1.json
   def show
+    #catchnig a rarely happening bug where "sign_out" is passed as id
     if params[:id] == "sign_out"
       redirect_to root_path, alert: "Bitte benutzen Sie den Logout-Button!"
       return
@@ -94,13 +95,13 @@ class UsersController < ApplicationController
     end
   end
 
-  def dating_profile_edit; end
+
 
   def owned_posts
     @user = User.find(params[:id])
     @posts = @user.posts.order(created_at: :desc)
   end
-  
+  #search for new event form dropdown
   def search
     term = params[:q].to_s.downcase
     users = if term.blank?
@@ -140,6 +141,8 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
   end
 
+  def dating_profile_edit; end
+
   def swiper
     # Zeigt ein zufälliges Profil, das der aktuelle User noch nicht geliked hat
     excluded_ids = current_user.liked_users.pluck(:id) + [current_user.id]
@@ -159,7 +162,7 @@ class UsersController < ApplicationController
   end
 
   def assign_random_event_invites
-    # Wähle 2 zufällige Events aus der Datenbank
+    # invite new users to 2 random events
     events = Event.order("RANDOM()").limit(2)
     events.each do |event|
       invites.create(

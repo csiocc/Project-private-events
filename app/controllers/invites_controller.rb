@@ -1,5 +1,5 @@
 class InvitesController < ApplicationController
-    before_action :authenticate_user!
+  before_action :authenticate_user!
   before_action :set_invite, only: [:accept, :decline, :show]
 
   # Zeigt alle Einladungen für den aktuellen User
