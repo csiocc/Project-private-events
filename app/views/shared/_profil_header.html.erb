@@ -2,13 +2,7 @@
  | <%= link_to 'Dating Profil', dating_profile_edit_path, class: "text-gray-800 hover:text-gray-400" %> |
   <%= link_to 'Events', events_path, class: "text-gray-800 hover:text-gray-400" %> |
   <%= link_to 'Posts', owned_posts_user_path(current_user), class: "text-gray-800 hover:text-gray-400"%> |
-  <%= link_to invites_path, class: "relative text-gray-800 hover:text-gray-400 inline-block" do %>
-    Invites
-    <% if current_user.invites.pending.count > 0 %>
-      <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-2 rounded-full">
-        <%= current_user.invites.pending.count %>
-      </span>
-    <% end %>
-  <% end %> |
+  <%= render "shared/invites_link" %> |
+  <%= render "shared/logger_link" %> |
   <%= link_to 'Profil bearbeiten', edit_user_registration_path, class: "font-bold text-gray-800 hover:text-gray-400" %> |
 </div>

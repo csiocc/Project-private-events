@@ -1,0 +1,31 @@
+<h2 class="font-bold text-2xl mb-4">Ungelesene Logs</h2>
+
+<%= button_to "Alle als gelesen markieren", mark_all_as_read_daily_logs_path, method: :post, class: "mb-4 px-3 py-2 rounded bg-green-600 text-black" %>
+
+<% if @unread_logs.any? %>
+  <% @unread_logs.each do |log| %>
+    <div class="mb-2 p-2 bg-yellow-50 rounded">
+      <strong><%= log.source %></strong>
+      <em><%= log.created_at.strftime("%H:%M") %></em><br>
+      <%= simple_format(log.content) %><br>
+      <%= button_to "Gelesen", mark_as_read_daily_log_path(log), method: :post, class: "mt-1 px-2 py-1 rounded bg-blue-600 text-white" %>
+    </div>
+  <% end %>
+<% else %>
+  <div class="mb-4 p-2 text-gray-700">Keine ungelesenen Logs.</div>
+<% end %>
+
+<h2 class="font-bold text-2xl mt-6 mb-4">Gelesene Logs</h2>
+<% if @read_logs.any? %>
+  <% @read_logs.each do |log| %>
+    <div class="mb-2 p-2 bg-gray-100 rounded">
+      <strong><%= log.source %></strong>
+      <em><%= log.created_at.strftime("%H:%M") %></em><br>
+      <%= simple_format(log.content) %>
+    </div>
+  <% end %>
+<% else %>
+  <div class="mb-4 p-2 text-gray-700">Keine gelesenen Logs.</div>
+<% end %>
+
+<%= link_to "Zurück", root_path, class: "mt-8 inline-block px-4 py-2 bg-gray-200 rounded hover:bg-gray-300" %>

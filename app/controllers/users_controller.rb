@@ -41,6 +41,7 @@ class UsersController < ApplicationController
         format.json { render json: @user.errors, status: :unprocessable_entity }
       end
     end
+    
   end
 
   # PATCH/PUT /users/1
@@ -79,6 +80,7 @@ class UsersController < ApplicationController
     signed_ids = Array(params[:signed_id])
     @user.photos.attach(signed_ids)
     head :ok
+    log_current_user_action("user #{user.id} with email #{user.email} uploaded a new photo.")
     Rails.logger.info "Attach: #{params[:signed_id]}"
   end
 
@@ -181,6 +183,5 @@ class UsersController < ApplicationController
       photos: [], image_order: []
     )
   end
-
 
 end

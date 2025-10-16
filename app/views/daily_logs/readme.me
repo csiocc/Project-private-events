@@ -1,0 +1,18 @@
+Api  { "log_date": "2025-10-16", "content": "Server down!", "source": "web01" }
+
+### api zugriff###
+
+require 'net/http'
+require 'json'
+
+def send_log_to_api(content, source)
+  uri = URI('http://localhost:3000/api/daily_logs')
+  Net::HTTP.post(uri, {
+    log_date: Date.today.to_s,
+    content: content,
+    source: source
+  }.to_json, "Content-Type" => "application/json")
+end
+
+# Beispiel-Aufruf:
+send_log_to_api("Wichtige Nachricht vom Server!", "internal_controller")

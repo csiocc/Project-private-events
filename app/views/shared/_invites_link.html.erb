@@ -1,0 +1,8 @@
+  <%= link_to invites_path, class: "relative text-gray-800 hover:text-gray-400 inline-block" do %>
+    Invites
+    <% if current_user.invites.pending.count > 0 %>
+      <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-2 rounded-full">
+        <%= current_user.invites.pending.count %>
+      </span>
+    <% end %>
+  <% end %>

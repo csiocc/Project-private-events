@@ -1,0 +1,13 @@
+<h1 class="font-bold text-4xl">Showing daily log for <%= @log_date %></h1>
+
+<% @logs.each do |log| %>
+  <div class="mb-4 p-4 rounded bg-gray-50">
+    <strong><%= log.source %></strong> <em><%= log.created_at.strftime("%H:%M") %></em><br>
+    <%= simple_format(log.content) %><br>
+    <%= button_to "Gelesen", mark_as_read_daily_log_path(@log), method: :post %>
+    <%= link_to "Edit", edit_daily_log_path(log), class: "text-blue-600" %> |
+    <%= link_to "Delete", daily_log_path(log), method: :delete, data: { confirm: "Are you sure?" }, class: "text-red-600" %>
+  </div>
+<% end %>
+
+<%= link_to "Back to daily logs", daily_logs_path, class: "... your classes ..." %>

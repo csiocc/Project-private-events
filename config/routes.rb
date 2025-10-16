@@ -1,12 +1,11 @@
 Rails.application.routes.draw do
-
   root "main_pages#index"
-  devise_for :users
+
+  devise_for :users, controllers: { registrations: 'users/registrations' }
   resources :news_feeds
   resources :main_pages
   resources :comments
   resources :events
-
   resources :invites, only: [:index, :show] do
     member do
       post :accept
@@ -43,6 +42,20 @@ Rails.application.routes.draw do
       post :like
       post :dislike
     end
+  end
+  
+  #daily logger
+  resources :daily_logs do
+    member do
+      post :mark_as_read
+    end
+    collection do
+      post :mark_all_as_read
+      get :unread_count
+    end
+  end
+  namespace :api do
+  resources :daily_logs, only: [:create]
   end
 
   get "up" => "rails/health#show", as: :rails_health_check

@@ -1,0 +1,7 @@
+<h2>Log bearbeiten</h2>
+<%= form_for @log do |f| %>
+  <%= f.text_area :content, rows: 5 %><br>
+  <%= f.text_field :source %><br>
+  <%= f.submit "Speichern" %>
+<% end %>
+<%= link_to "Zurück", daily_log_path(@log.log_date) %>

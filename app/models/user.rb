@@ -6,7 +6,7 @@ class User < ApplicationRecord
   ### relationships
   # event creator relationship
   has_many :created_events, class_name: "Event", foreign_key: :creator_id, inverse_of: :creator, dependent: :destroy
-  has_many :invites
+  has_many :invites, dependent: :destroy
 
   # is guest of a event
   has_many :upcomming_events, through: :event_guests, source: :event
@@ -27,6 +27,10 @@ class User < ApplicationRecord
   has_many :likes_received, class_name: "Like", foreign_key: "liked_id", dependent: :destroy
   has_many :liked_users, through: :likes_given, source: :liked
   has_many :likers, through: :likes_received, source: :liker
+
+  #daily logger
+  has_many :daily_log_reads
+  has_many :read_daily_logs, through: :daily_log_reads, source: :daily_log
 
   ### validations
   geocoded_by :location
@@ -90,21 +94,27 @@ class User < ApplicationRecord
     end
   end
 
-  private
+  def unread_daily_logs
+    DailyLog.where.not(id: read_daily_logs.select(:id))
+  end
+  
+ private
 
-    def location_must_exist
-      return if location.blank?
+  def location_must_exist
+    return if location.blank?
 
-      results = Geocoder.search(location)
-      result = results.first
+    results = Geocoder.search(location)
+    result = results.first
 
-      if results.empty? || result.nil?
-        errors.add(:location, "existiert nicht oder konnte nicht gefunden werden")
-        throw(:abort)
-      else
-        self.latitude  = result.latitude
-        self.longitude = result.longitude
-      end
+    if results.empty? || result.nil?
+      errors.add(:location, "existiert nicht oder konnte nicht gefunden werden")
+      throw(:abort)
+    else
+      self.latitude  = result.latitude
+      self.longitude = result.longitude
     end
+  end
+
+
 
 end

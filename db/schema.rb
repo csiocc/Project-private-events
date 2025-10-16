@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_16_071655) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_16_084644) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -52,6 +52,29 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_16_071655) do
     t.index ["parent_id"], name: "index_comments_on_parent_id"
     t.index ["post_id"], name: "index_comments_on_post_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
+  create_table "daily_log_reads", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "daily_log_id", null: false
+    t.boolean "read"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["daily_log_id"], name: "index_daily_log_reads_on_daily_log_id"
+    t.index ["user_id"], name: "index_daily_log_reads_on_user_id"
+  end
+
+  create_table "daily_loggers", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "daily_logs", force: :cascade do |t|
+    t.date "log_date"
+    t.text "content"
+    t.string "source"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "event_guests", force: :cascade do |t|
@@ -167,6 +190,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_16_071655) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "comments", "posts"
   add_foreign_key "comments", "users"
+  add_foreign_key "daily_log_reads", "daily_logs"
+  add_foreign_key "daily_log_reads", "users"
   add_foreign_key "event_guests", "events"
   add_foreign_key "event_guests", "users"
   add_foreign_key "events", "users", column: "creator_id"
