@@ -4,6 +4,9 @@
 
 import { application } from "./application"
 
+import LikeTooltipController from "./like_tooltip_controller"
+application.register("like-tooltip", LikeTooltipController)
+
 import CollapseController from "./collapse_controller"
 application.register("collapse", CollapseController)
 

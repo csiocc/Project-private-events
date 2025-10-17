@@ -1,6 +1,6 @@
 <!-- Comments Section -->
 <div data-controller="comment" class="bg-white rounded-2xl shadow-lg border border-gray-100 p-10 mt-12">
-  <div class="flex items-center justify-between mb-8">
+  <div class="flex items-center justify-between mb-4">
     <h2 class="text-3xl font-semibold text-gray-900">
       Comments (<%= commentable.comments.count %>)
     </h2>
@@ -13,7 +13,7 @@
       <% end %>
     </div>
   <% else %>
-    <div class="text-center py-16">
+    <div class="text-center py-1">
       <p class="text-gray-500 italic text-lg">
         No comments yet. <span class="not-italic text-blue-600 font-medium">Be the first to reply!</span>
       </p>
@@ -32,7 +32,7 @@
         <div class="flex-1">
           <%= form_with(model: [commentable, Comment.new], local: true, class: "space-y-4") do |form| %>
             <%= form.text_area :body,
-                rows: 4,
+                rows: 2,
                 class: "w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 transition shadow-sm px-4 py-3 text-gray-800 placeholder-gray-400",
                 placeholder: "Write a thoughtful comment..." %>
 
