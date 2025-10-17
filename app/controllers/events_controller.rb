@@ -49,16 +49,16 @@ end
 
   # POST /events or /events.json
   def create
-    @event = current_user.created_events.build(event_params)
+    @event = current_user.created_events.build(event_params.except(:invite_user_ids))
 
     if @event.save
-      # Einladungen erzeugen, wenn Invite-User-IDs mitkommen
       if params[:event][:invite_user_ids]
         params[:event][:invite_user_ids].each do |uid|
+          next if @event.invites.exists?(user_id: uid)
           Invite.create!(
             event: @event,
             user_id: uid,
-            answer: 0, # offen
+            answer: 0,
             title: "Einladung zu #{@event.title}",
             body: "Du wurdest zu diesem Event eingeladen."
           )
@@ -73,12 +73,29 @@ end
 
   # PATCH/PUT /events/1 or /events/1.json
   def update
-    if @event.update(event_params)
+    @event = Event.find(params[:id])
+    if @event.update(event_params.except(:invite_user_ids))
+      if params[:event][:invite_user_ids]
+        params[:event][:invite_user_ids].each do |uid|
+          next if @event.invites.exists?(user_id: uid)
+          Invite.create!(
+            event: @event,
+            user_id: uid,
+            answer: 0,
+            title: "Einladung zu #{@event.title}",
+            body: "Du wurdest zu diesem Event eingeladen."
+          )
+        end
+      end
       redirect_to @event, notice: "Event erfolgreich aktualisiert!"
     else
       render :edit, status: :unprocessable_entity
     end
   end
+
+def event_params
+  params.require(:event).permit(:title, :description, :location, :date, :event_type, invite_user_ids: [])
+end
 
   # DELETE /events/1 or /events/1.json
   def destroy
@@ -94,6 +111,6 @@ end
 
     # Only allow a list of trusted parameters through.
     def event_params
-      params.require(:event).permit(:title, :description, :date, :location, :event_type)
+      params.require(:event).permit(:title, :description, :date, :location, :event_type, invite_user_ids: [])
     end
 end

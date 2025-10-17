@@ -20,6 +20,8 @@
     <%= link_to "Bearbeiten",
                 edit_event_path(@event),
                 class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl shadow transition" %>
+        <!-- Kommentarbereich -->
+    <%= render "comments/section", commentable: @event %>
   </div>
 
   <!-- Teilnehmerliste -->

@@ -72,9 +72,12 @@ export default class extends Controller {
   }
 
   renderInvitesFields() {
+    console.log("renderInvitesFields called");
     if (!this.hasInvitesFieldsTarget) return
     this.invitesFieldsTarget.innerHTML = this.invited.map(user =>
       `<input type="hidden" name="event[invite_user_ids][]" value="${user.id}">`
     ).join("")
+    console.log(this.invitesFieldsTarget.innerHTML)
+    console.log("renderInvitesFields called end");
   }
 }

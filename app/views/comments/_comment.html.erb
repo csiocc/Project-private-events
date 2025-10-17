@@ -2,7 +2,6 @@
 
 <div id="<%= dom_id(comment) %>" class="pl-2 sm:pl-4 border-l-2 border-gray-100 mt-6">
   <div class="flex items-start space-x-4">
-    
     <!-- Avatar -->
     <div class="flex-shrink-0">
       <div class="w-10 h-10 flex items-center justify-center rounded-full bg-blue-100 text-blue-700 font-semibold">
@@ -12,7 +11,6 @@
 
     <!-- Comment Content -->
     <div class="flex-1">
-      
       <!-- Header -->
       <div class="flex items-center justify-between">
         <div>
@@ -22,8 +20,8 @@
 
         <% if user_signed_in? && comment.user == current_user %>
           <div class="flex items-center space-x-2 text-sm">
-            <%= link_to "Edit", edit_post_comment_path(comment.post, comment), class: "text-blue-600 hover:text-blue-800 font-medium" %>
-            <%= link_to "Delete", post_comment_path(comment.post, comment),
+            <%= link_to "Edit", polymorphic_path([:edit, comment.commentable, comment]), class: "text-blue-600 hover:text-blue-800 font-medium" %>
+            <%= link_to "Delete", polymorphic_path([comment.commentable, comment]),
                 data: { turbo_method: :delete, turbo_confirm: "Delete this comment?" },
                 class: "text-red-500 hover:text-red-700 font-medium" %>
           </div>
@@ -50,14 +48,14 @@
 
       <!-- Reply Form (hidden until toggled) -->
       <div id="reply-form-<%= comment.id %>" class="hidden mt-4 ml-6">
-        <%= render "comments/form", post: comment.post, parent: comment %>
+        <%= render "comments/form", commentable: commentable, parent: comment %>
       </div>
 
       <!-- Replies -->
       <% if comment.replies.any? %>
         <div class="mt-4 space-y-4 ml-6 border-l-2 border-gray-100 pl-4">
           <% comment.replies.each do |reply| %>
-            <%= render "comments/comment", comment: reply %>
+            <%= render "comments/comment", comment: reply, commentable: commentable %>
           <% end %>
         </div>
       <% end %>

@@ -70,6 +70,8 @@
 
           <!-- Gefundene Nutzer-Liste -->
           <ul data-user-search-target="results" class="mt-2 space-y-1"></ul>
+          <!-- Hidden inputs for invited user IDs -->
+          <div data-user-search-target="invitesFields"></div>
         </div>
 
         <!-- Eingeladene Nutzer-Liste -->
@@ -83,11 +85,7 @@
         <%= button_to "Abbrechen", event_path(@event), mehtod: :get, class: "bg-blue-600 hover:bg-blue-700 text-white text-base font-medium px-6 py-3 rounded-xl shadow-sm transition" %>
         <%= f.submit "Änderungen speichern", class: "bg-blue-600 hover:bg-blue-700 text-white text-base font-medium px-6 py-3 rounded-xl shadow-sm transition" %>
       </div>
-
-      <!-- Hidden inputs for invited user IDs -->
-      <div data-user-search-target="invitesFields"></div>
     <% end %>
-
     <!-- Delete Button separat darunter -->
     <div class="mt-6">
       <%= button_to "Event löschen", event_path(@event), method: :delete, data: { confirm: "Willst du dieses Event wirklich löschen?" }, class: "bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl font-semibold" %>

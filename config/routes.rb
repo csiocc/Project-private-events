@@ -5,7 +5,9 @@ Rails.application.routes.draw do
   resources :news_feeds
   resources :main_pages
   resources :comments
-  resources :events
+  resources :events do
+    resources :comments, only: [:create, :edit, :update, :destroy]
+  end
   resources :invites, only: [:index, :show] do
     member do
       post :accept

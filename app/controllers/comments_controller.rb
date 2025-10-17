@@ -22,14 +22,14 @@ class CommentsController < ApplicationController
 
   # POST /comments or /comments.json
   def create
-    @post = Post.find(params[:post_id])
-    @comment = @post.comments.build(comment_params)
+    @commentable = find_commentable
+    @comment = @commentable.comments.build(comment_params)
     @comment.user = current_user
     @comment.parent_id = params[:comment][:parent_id] if params[:comment][:parent_id].present?
     respond_to do |format|
       if @comment.save
-        format.html { redirect_to request.referer || post_path(@comment.post), notice: "Comment was successfully created." }
-        format.json { render json: { redirect_url: request.referer || post_path(@comment.post) }, status: :created }
+        format.html { redirect_to @commentable, notice: "Comment was successfully created." }
+        format.json { render json: { redirect_url: url_for(@commentable) }, status: :created }
       else
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @comment.errors, status: :unprocessable_entity }
@@ -70,4 +70,15 @@ class CommentsController < ApplicationController
     def comment_params
       params.require(:comment).permit(:body, :parent_id)
     end
+
+    def find_commentable
+      if params[:event_id]
+        Event.find(params[:event_id])
+      elsif params[:post_id]
+        Post.find(params[:post_id])
+      else
+        raise "No commentable found"
+      end
+    end
+
 end
