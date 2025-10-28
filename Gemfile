@@ -68,7 +68,7 @@ end
 
 
 gem "tailwindcss-ruby", "~> 4.1"
-gem "tailwindcss-rails", "~> 4.3"
+gem "tailwindcss-rails", "~> 4.4"
 gem "heroicon-rails", "~> 0.2.9"
 gem "devise", "~> 4.9"
 gem "flowbite", "~> 3.1"
